@@ -5,6 +5,7 @@ val volleyVersion: String = "1.2.1"
 
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -45,6 +46,12 @@ dependencies {
     implementation("com.airbnb.android:lottie:$lottieVersion")
     implementation("com.google.firebase:firebase-messaging:$firebaseVersion")
     implementation("com.android.volley:volley:$volleyVersion")
+    implementation("com.google.firebase:firebase-storage:20.3.0")
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

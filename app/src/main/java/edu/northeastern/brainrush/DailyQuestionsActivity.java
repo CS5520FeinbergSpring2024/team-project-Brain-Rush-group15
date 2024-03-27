@@ -1,5 +1,7 @@
 package edu.northeastern.brainrush;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +17,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 public class DailyQuestionsActivity extends AppCompatActivity {
@@ -23,12 +30,15 @@ public class DailyQuestionsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_daily_questions);
         dailyPic = findViewById(R.id.dailyPicture);
         calendar = findViewById(R.id.calendarView);
         calendar.setMaxDate(System.currentTimeMillis());
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "https://www.google.com";
+
+        getFileFromFirebaseStorage(this);
 
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -47,10 +57,7 @@ public class DailyQuestionsActivity extends AppCompatActivity {
 
         queue.add(stringRequest);
 
-
-        calendar.getDate();
-
-        Picasso.get().load("https://i.imgur.com/DvpvklR.png").into(dailyPic);
+        ///Picasso.get().load("gs://group15-91f85.appspot.com/cool.png").into(dailyPic);
 
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -65,5 +72,27 @@ public class DailyQuestionsActivity extends AppCompatActivity {
 
     public void goButtonClick(View view){
         Log.v("Click", String.valueOf(calendar.getDateTextAppearance()));
+    }
+
+    public void getFileFromFirebaseStorage(Context context){
+        FirebaseApp.initializeApp(context);
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+
+        // Create a reference to a file from a Google Cloud Storage URI
+        StorageReference gsReference = storage.getReferenceFromUrl("gs://brain-rush-db21a.appspot.com/cool.png");
+        gsReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                // Got the download URL for 'users/me/profile.png'
+                Picasso.get().load(uri).into(dailyPic);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
     }
 }
