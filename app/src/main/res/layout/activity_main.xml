@@ -6,25 +6,243 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView"
+    <!--  position ref  -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_fringe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_h1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.30" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_h2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.55" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_h3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.65" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_h4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.77" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/bottom_fringe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.87" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <!--   composite title -->
+    <GridLayout
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:alignmentMode="alignMargins"
+        android:columnCount="3"
+        android:columnOrderPreserved="false"
+        android:orientation="horizontal"
+        android:rowCount="2"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_h1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/top_fringe">
+
+        <TextView
+            android:id="@+id/title_text_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_columnSpan="2"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Brain"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Headline3"
+            android:textStyle="italic" />
+
+        <ImageView
+            android:id="@+id/title_rocket"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_row="0"
+            android:layout_column="2"
+            android:layout_gravity="center"
+            android:src="@drawable/light_bulb_100" />
+
+        <ImageView
+            android:id="@+id/title_bulb"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_gravity="center"
+            android:src="@drawable/rocket_100"/>
+
+        <TextView
+            android:id="@+id/title_text_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:layout_columnSpan="2"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Rush"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Headline3"
+            android:textStyle="italic" />
+    </GridLayout>
+
+    <GridLayout
+        android:id="@+id/record_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:alignmentMode="alignMargins"
+        android:columnCount="2"
+        android:columnOrderPreserved="false"
+        android:orientation="horizontal"
+        android:rowCount="2"
+        app:layout_constraintBottom_toBottomOf="@id/guideline_h2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guideline_h1">
+
+        <ImageView
+            android:id="@+id/level_img"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_gravity="center"
+            android:src="@drawable/graduation_hat_60" />
+
+        <TextView
+            android:id="@+id/level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:layout_gravity="center_vertical"
+            android:text="Level: 15" />
+
+        <ImageView
+            android:id="@+id/score_img"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_gravity="center"
+            android:src="@drawable/trophy_64" />
+
+        <TextView
+            android:id="@+id/score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:layout_gravity="center_vertical"
+            android:text="Score: 532" />
+
+    </GridLayout>
+
+    <ImageButton
+        android:id="@+id/user_file"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/user_button"
+        android:src="@drawable/ic_launcher_foreground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.955"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:onClick="openUserFile"
+        android:contentDescription="user_file"/>
+
+    <ImageButton
+        android:id="@+id/incoming_mail"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/mail_48"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_h3"
+        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="@+id/guideline_h2"
+        android:onClick="openMail"
+        android:contentDescription="mail"/>
+
+    <ImageButton
+        android:id="@+id/dashboard"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/histogram_80"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_h3"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="@+id/guideline_h2"
+        android:onClick="openDashboard"
+        android:contentDescription="dashboard"/>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/learn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="launchDailyQuestion"
-        android:text="DailyActivity"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
+        android:layout_marginEnd="20dp"
+        android:text="Learn"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_h4"
+        app:layout_constraintEnd_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="@+id/guideline_h3"
+        android:onClick="openLearn"/>
+
+    <Button
+        android:id="@+id/make"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Make"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_h4"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="@+id/guideline_h3"
+        android:onClick="openMake"/>
+
+    <Button
+        android:id="@+id/compete"
+        android:layout_width="222dp"
+        android:layout_height="50dp"
+        android:text="Compete"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_fringe"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/guideline_h4"
+        android:onClick="openCompete"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
