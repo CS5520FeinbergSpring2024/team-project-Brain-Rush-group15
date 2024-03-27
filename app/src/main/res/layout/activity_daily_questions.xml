@@ -6,18 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".DailyQuestionsActivity">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animationView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lottie_autoPlay="true"
-        app:lottie_rawRes="@raw/animation1"
-        app:lottie_loop="true" />
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/next_button"
         android:layout_width="wrap_content"
@@ -34,9 +22,9 @@
 
     <ImageView
         android:id="@+id/dailyPicture"
-        android:layout_width="wrap_content"
+        android:layout_width="128dp"
         android:layout_height="128dp"
-        android:contentDescription="Daily Picture"
+        android:contentDescription="Seasonal Picture"
         app:layout_constraintBottom_toTopOf="@+id/calendarView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,7 +1,5 @@
 package edu.northeastern.brainrush;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,88 +9,49 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
+import java.util.Calendar;
 
 public class DailyQuestionsActivity extends AppCompatActivity {
     private ImageView dailyPic;
     private CalendarView calendar;
+    private String dateSelected;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_daily_questions);
         dailyPic = findViewById(R.id.dailyPicture);
         calendar = findViewById(R.id.calendarView);
         calendar.setMaxDate(System.currentTimeMillis());
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://www.google.com";
 
-        getFileFromFirebaseStorage(this);
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        Log.v("Receive", "Response is: " + response.substring(0,500));
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.v("Error", "That didn't work!");
-            }
-        });
-
-        queue.add(stringRequest);
-
-        ///Picasso.get().load("gs://group15-91f85.appspot.com/cool.png").into(dailyPic);
+        /*
+        Setting the season picture:
+            Spring: March-May, Summer: June-August, Fall: September-November, Winter: December-February
+         */
+        Calendar rightNow = Calendar.getInstance();
+        int month = rightNow.get(Calendar.MONTH);
+        if(month > 1 && month < 5){
+            dailyPic.setImageResource(R.drawable.spring);
+        }
+        else if(month > 4 && month < 8){
+            dailyPic.setImageResource(R.drawable.summer);
+        }
+        else if(month > 7 && month < 11){
+            dailyPic.setImageResource(R.drawable.fall);
+        }
+        else {
+            dailyPic.setImageResource(R.drawable.winter);
+        }
 
         calendar.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 // month is 0-based, add 1 for the correct month
-                String selectedDate = dayOfMonth + "-" + (month + 1) + "-" + year;
-                Log.d("SelectedDate", selectedDate);
-                // Use the selectedDate string as needed
+                dateSelected = (month + 1) + "-" + dayOfMonth + "-" + year;
             }
         });
     }
 
     public void goButtonClick(View view){
-        Log.v("Click", String.valueOf(calendar.getDateTextAppearance()));
-    }
-
-    public void getFileFromFirebaseStorage(Context context){
-        FirebaseApp.initializeApp(context);
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-
-        // Create a reference to a file from a Google Cloud Storage URI
-        StorageReference gsReference = storage.getReferenceFromUrl("gs://brain-rush-db21a.appspot.com/cool.png");
-        gsReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                // Got the download URL for 'users/me/profile.png'
-                Picasso.get().load(uri).into(dailyPic);
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
-            }
-        });
+        Log.v("Click", dateSelected);
     }
 }
