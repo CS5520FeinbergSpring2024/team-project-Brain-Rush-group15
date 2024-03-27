@@ -1,5 +1,6 @@
 package edu.northeastern.brainrush;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -51,6 +52,9 @@ public class DailyQuestionsActivity extends AppCompatActivity {
         });
     }
 
+    public void backButtonClick(View view){
+        startActivity(new Intent(this, MainActivity.class));
+    }
     public void goButtonClick(View view){
         Log.v("Click", dateSelected);
     }
