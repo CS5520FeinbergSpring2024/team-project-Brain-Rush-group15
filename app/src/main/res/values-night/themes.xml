@@ -3,5 +3,10 @@
     <style name="Base.Theme.BrainRush" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/primary_blue_500</item>
+        <item name="colorPrimaryVariant">@color/primary_blue_700</item>
+        <item name="colorSecondary">@color/secondary_orange_500</item>
+        <item name="colorSecondaryVariant">@color/secondary_orange_700</item>
+        <item name="colorError">@color/error_red</item>
     </style>
 </resources>

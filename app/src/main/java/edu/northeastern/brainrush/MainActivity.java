@@ -2,6 +2,7 @@ package edu.northeastern.brainrush;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openUserFile(View v){
+        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
         Toast.makeText(this, "user file clicked", Toast.LENGTH_SHORT).show();
     }
 
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openDashboard(View v){
+        startActivity(new Intent(MainActivity.this, DailyQuestionsActivity.class));
         Toast.makeText(this, "dashboard clicked", Toast.LENGTH_SHORT).show();
     }
 

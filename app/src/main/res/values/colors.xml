@@ -2,4 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="error_red">#B00020</color>
+    <color name="background_color">#FFFFFF</color>
+    <color name="surface_color">#FFFFFF</color>
+    <color name="primary_blue_300">#19E1E9</color>
+    <color name="primary_blue_500">#00D2E2</color>
+    <color name="primary_blue_700">#00ABB4</color>
+    <color name="secondary_orange_300">#FDD551</color>
+    <color name="secondary_orange_500">#FCC112</color>
+    <color name="secondary_orange_700">#FCA107</color>
 </resources>
