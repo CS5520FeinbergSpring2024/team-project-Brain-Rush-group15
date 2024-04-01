@@ -5,6 +5,7 @@ val volleyVersion: String = "1.2.1"
 
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
 }
 
 android {
