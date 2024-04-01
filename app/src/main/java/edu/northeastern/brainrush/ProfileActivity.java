@@ -3,6 +3,7 @@ package edu.northeastern.brainrush;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ import com.squareup.picasso.Picasso;
 
 public class ProfileActivity extends AppCompatActivity {
     private ImageView profilePicture;
+
     private TextView name;
     private TextView score;
     private TextView level;
@@ -34,6 +36,9 @@ public class ProfileActivity extends AppCompatActivity {
         String url = "gs://brain-rush-db21a.appspot.com/cool.png";
 
         getFileFromFirebaseStorage(this, url);
+    }
+
+    public void setProfilePicture(View view){
 
     }
 
