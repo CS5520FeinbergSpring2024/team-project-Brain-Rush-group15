@@ -30,14 +30,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openLearn(View v){
+        startActivity(new Intent(MainActivity.this, LearnActivity.class));
         Toast.makeText(this, "learn clicked", Toast.LENGTH_SHORT).show();
     }
 
     public void openMake(View v){
+        startActivity(new Intent(MainActivity.this, MakeActivity.class));
         Toast.makeText(this, "make clicked", Toast.LENGTH_SHORT).show();
     }
 
     public void openCompete(View v){
+        startActivity(new Intent(MainActivity.this, CompeteActivity.class));
         Toast.makeText(this, "compete clicked", Toast.LENGTH_SHORT).show();
     }
 }
