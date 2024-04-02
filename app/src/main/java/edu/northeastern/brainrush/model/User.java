@@ -1,5 +1,10 @@
 package edu.northeastern.brainrush.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,7 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class User {
+public class User implements Parcelable {
     private final String defaultUrl = "https://i.imgur.com/DvpvklR.png";
     private long id;
     private String name;
@@ -96,4 +101,13 @@ public class User {
         return this.no_of_dislikes;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+
+    }
 }

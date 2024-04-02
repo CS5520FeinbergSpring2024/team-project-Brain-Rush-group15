@@ -2,6 +2,7 @@ package edu.northeastern.brainrush;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -29,12 +30,16 @@ public class MainActivity extends AppCompatActivity {
 
         OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder().cache(cache);
         OkHttp3Downloader okHttp3Downloader = new OkHttp3Downloader(okHttpClientBuilder.build());
-
-        picasso = new Picasso.Builder(this)
-                .downloader(okHttp3Downloader)
-                .build();
-        Picasso.setSingletonInstance(picasso);
-        picasso.setIndicatorsEnabled(true);
+        try {
+            picasso = new Picasso.Builder(this)
+                    .downloader(okHttp3Downloader)
+                    .build();
+            Picasso.setSingletonInstance(picasso);
+            Picasso.setSingletonInstance(picasso);
+        } catch (IllegalStateException e) {
+            // Handle the exception if the singleton instance was already set
+            Log.w("Picasso", "Picasso instance was already set. It's safe to ignore this.");
+        }
     }
 
     public void openUserFile(View v){
