@@ -1,5 +1,7 @@
 package edu.northeastern.brainrush;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,12 +12,15 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.airbnb.lottie.LottieAnimationView;
+
 import java.util.Calendar;
 
 public class DailyQuestionsActivity extends AppCompatActivity {
     private ImageView dailyPic;
     private CalendarView calendar;
     private String dateSelected;
+    private LottieAnimationView lottie;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -24,6 +29,15 @@ public class DailyQuestionsActivity extends AppCompatActivity {
         calendar = findViewById(R.id.calendarView);
         calendar.setMaxDate(System.currentTimeMillis());
 
+        lottie = findViewById(R.id.animationView);
+        lottie.addAnimatorListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                // Animation has ended, perform any actions here if needed
+                backToMainPage();
+            }
+        });
         /*
         Setting the season picture:
             Spring: March-May, Summer: June-August, Fall: September-November, Winter: December-February
@@ -52,9 +66,21 @@ public class DailyQuestionsActivity extends AppCompatActivity {
         });
     }
 
-    public void backButtonClick(View view){
+    public void backToMainPage(){
         startActivity(new Intent(this, MainActivity.class));
     }
+
+    public void backButtonClick(View view){
+        LottieAnimationView lottie = findViewById(R.id.animationView);
+        if (!lottie.isAnimating()) {
+            // Play the animation once
+            lottie.playAnimation();
+        }
+
+        //startActivity(new Intent(this, MainActivity.class));
+    }
+
+
     public void goButtonClick(View view){
         Log.v("Click", dateSelected);
     }

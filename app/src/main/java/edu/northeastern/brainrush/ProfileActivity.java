@@ -33,6 +33,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 
+import edu.northeastern.brainrush.model.User;
 import okhttp3.OkHttpClient;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -54,7 +55,6 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-
         profilePicture = findViewById(R.id.profile_image);
         name = findViewById(R.id.profile_name);
         score = findViewById(R.id.profile_score);
@@ -70,12 +70,12 @@ public class ProfileActivity extends AppCompatActivity {
         StorageReference storageRef = storage.getReference();
         profilePicRef = storageRef.child(picturePathString);
 
-        Picasso.get().setIndicatorsEnabled(true);
         getUserPictureFromFirebaseStorage();
     }
 
     public void backButtonClick(View view){
-        startActivity(new Intent(this, MainActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     private void checkPermissionAndTakePhoto() {
