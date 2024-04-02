@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
@@ -47,20 +48,12 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView level;
     private String picturePathString;
     private StorageReference profilePicRef;
-    private Picasso picasso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        //Setting up okhttp and picasso to reuse the picture download
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                // Customize your OkHttpClient here (timeouts, interceptors, etc.)
-                .build();
-        picasso = new Picasso.Builder(this)
-                .downloader(new OkHttp3Downloader(okHttpClient))
-                .build();
 
         profilePicture = findViewById(R.id.profile_image);
         name = findViewById(R.id.profile_name);
@@ -68,7 +61,7 @@ public class ProfileActivity extends AppCompatActivity {
         level = findViewById(R.id.profile_level);
 
         //Change later after get intent from previous page
-        String userName = "jack";
+        String userName = "tom";
         picturePathString = "profilePictures/" + userName +".jpg";
 
         //Initialize database reference
@@ -77,7 +70,12 @@ public class ProfileActivity extends AppCompatActivity {
         StorageReference storageRef = storage.getReference();
         profilePicRef = storageRef.child(picturePathString);
 
+        Picasso.get().setIndicatorsEnabled(true);
         getUserPictureFromFirebaseStorage();
+    }
+
+    public void backButtonClick(View view){
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     private void checkPermissionAndTakePhoto() {
@@ -206,7 +204,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Uri uri) {
                 // Got the download URL for 'users/me/profile.png'
-                picasso.load(uri).into(profilePicture);
+                Picasso.get().load(uri).into(profilePicture);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
