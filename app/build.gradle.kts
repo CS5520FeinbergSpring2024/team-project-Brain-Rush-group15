@@ -2,6 +2,7 @@ val lottieVersion: String = "3.4.0"
 val picassoVersion: String = "2.8"
 val firebaseVersion: String = "23.4.1"
 val volleyVersion: String = "1.2.1"
+val okhttpVersion: String = "4.9.0"
 
 plugins {
     id("com.android.application")
@@ -51,6 +52,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.squareup.okhttp3:okhttp:$okhttpVersion")
 
 
     testImplementation("junit:junit:4.13.2")

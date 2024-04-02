@@ -11,13 +11,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="clip_horizontal"
         android:layout_marginTop="16dp"
-        android:text="Edit Profile" />
+        android:text="Back" />
 
     <ImageView
         android:id="@+id/profile_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center"
+        android:onClick="setProfilePicture"
         android:src="@drawable/ic_launcher_background" />
 
     <TextView
