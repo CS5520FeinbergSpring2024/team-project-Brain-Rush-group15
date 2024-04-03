@@ -12,6 +12,9 @@ plugins {
 android {
     namespace = "edu.northeastern.brainrush"
     compileSdk = 34
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "edu.northeastern.brainrush"
@@ -19,6 +22,7 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("String", "ChatGPT_API_KEY", "${property("chatGPT_API_KEY")}")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
