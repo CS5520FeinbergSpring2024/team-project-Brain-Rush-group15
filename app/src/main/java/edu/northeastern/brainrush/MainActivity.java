@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toast.makeText(this, getIntent().getStringExtra("username"), Toast.LENGTH_SHORT).show();
         //Construct singleton instance for Picasso
         File httpCacheDirectory = new File(this.getCacheDir(), "picasso-cache");
         Cache cache = new Cache(httpCacheDirectory, 10 * 1024 * 1024); // 10 MiB
@@ -70,4 +71,5 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, CompeteActivity.class));
         Toast.makeText(this, "compete clicked", Toast.LENGTH_SHORT).show();
     }
+
 }
