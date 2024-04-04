@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openMail(View v){
+        startActivity(new Intent(MainActivity.this, panelactivity.class));//go to mail
         Toast.makeText(this, "mail clicked", Toast.LENGTH_SHORT).show();
     }
 
