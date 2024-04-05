@@ -44,6 +44,7 @@
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
+        <activity android:name="edu.northeastern.brainrush.panelactivity" />
 
         <meta-data
             android:name="preloaded_fonts"
