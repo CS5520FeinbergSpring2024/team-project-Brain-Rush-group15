@@ -3,4 +3,15 @@
     <string name="category">Category</string>
     <string name="submit">Submit</string>
     <string name="template">Template</string>
+    <string name="make">Make</string>
+    <string name="subject">Subject</string>
+    <string name="name">Name</string>
+    <string name="problem_context">Problem context:</string>
+    <string name="enter_problem_here">Enter problem here</string>
+    <string name="choice_1">Choice 1:</string>
+    <string name="choice_2">Choice 2:</string>
+    <string name="choice_3">Choice 3:</string>
+    <string name="choice_4">Choice 4:</string>
+    <string name="correct_answer_is">Correct answer is:</string>
+    <string name="makebutton">Make</string>
 </resources>
