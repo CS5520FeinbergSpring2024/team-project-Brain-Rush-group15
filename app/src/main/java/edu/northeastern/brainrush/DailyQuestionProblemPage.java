@@ -43,6 +43,9 @@ public class DailyQuestionProblemPage extends AppCompatActivity {
     private TextView answerIndicator;
     private String correct_answer;
     private String question_id;
+    private String date;
+    private String expValue;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +69,8 @@ public class DailyQuestionProblemPage extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             //Setting up the date selected from the previous page
-            String date = extras.getString("date");
+            date = extras.getString("date");
+            user = (User) extras.get("user");
             dateHeader.setText(date);
             getQuestionId(date);
             getQuestionContext();
@@ -111,8 +115,8 @@ public class DailyQuestionProblemPage extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     if(snapshot.child("id").getValue(String.class).equals(question_id)){
                         // Found the matching id
+                        expValue = snapshot.child("expValue").getValue(String.class);
                         questionHeader.setText(snapshot.child("context").getValue(String.class));
-                        question_id =  snapshot.child("question_id").getValue(String.class);
                         option1.setText(snapshot.child("choice1").getValue(String.class));
                         option2.setText(snapshot.child("choice2").getValue(String.class));
                         option3.setText(snapshot.child("choice3").getValue(String.class));
@@ -130,8 +134,26 @@ public class DailyQuestionProblemPage extends AppCompatActivity {
     }
 
     public void setCorrect_answer_view(){
-        DatabaseReference questionReference = FirebaseDatabase.getInstance().getReference("User");
+        DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User");
+        if(!user.getDaily_question_answered().contains(date)){
+            user.add_daily_question_answered(date);
+            user.add_questions_answered(question_id);
+            user.addExperience(Integer.parseInt(expValue));
+        }
+        userReference.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                userReference.child("0").setValue(user);
+                return Transaction.success(mutableData);
+            }
 
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                // Transaction completed
+                Log.d("TAG", "postTransaction:onComplete:" + databaseError);
+            }
+        });
         answerIndicator.setVisibility(View.VISIBLE);
         answerIndicator.setText("Correct!");
         answerIndicator.setTextColor(Color.parseColor("#4CAF50"));

@@ -59,6 +59,8 @@ dependencies {
 
     implementation("com.squareup.okhttp3:okhttp:$okhttpVersion")
     implementation("com.google.firebase:firebase-database:20.3.1")
+    implementation("com.github.prolificinteractive:material-calendarview:2.0.0")
+    implementation("com.jakewharton.threetenabp:threetenabp:1.2.0")
 
 
     testImplementation("junit:junit:4.13.2")
