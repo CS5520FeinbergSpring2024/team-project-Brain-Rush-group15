@@ -22,6 +22,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
@@ -31,9 +37,16 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.northeastern.brainrush.model.User;
+import edu.northeastern.brainrush.BuildConfig;
 import okhttp3.OkHttpClient;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -47,18 +60,25 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView name;
     private TextView score;
     private TextView level;
+    private TextView mottoText;
     private String picturePathString;
     private StorageReference profilePicRef;
+    private String chatGPTApiKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        //Gettting the Api key
+        chatGPTApiKey = BuildConfig.ChatGPT_API_KEY;
+        Log.v("key", chatGPTApiKey);
+
         profilePicture = findViewById(R.id.profile_image);
         name = findViewById(R.id.profile_name);
         score = findViewById(R.id.profile_score);
         level = findViewById(R.id.profile_level);
+        mottoText = findViewById(R.id.mottoText);
 
         //Change later after get intent from previous page
         String userName = "tom";
@@ -71,6 +91,71 @@ public class ProfileActivity extends AppCompatActivity {
         profilePicRef = storageRef.child(picturePathString);
 
         getUserPictureFromFirebaseStorage();
+    }
+
+    public void generateMotto(View view){
+        String url = "https://api.openai.com/v1/chat/completions"; // Example URL
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this); // 'this' is Context
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("model", "gpt-3.5-turbo");
+            JSONArray messages = new JSONArray();
+            JSONObject message = new JSONObject();
+            message.put("role", "user");
+            JSONArray content = new JSONArray();
+            content.put(new JSONObject().put("type", "text").put("text", "generate a random motto?"));
+            message.put("content", content);
+            messages.put(message);
+            jsonBody.put("messages", messages);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // Handle response
+                        try {
+                            // Navigate through the JSON structure to get to the "choices" array
+                            JSONArray choicesArray = response.getJSONArray("choices");
+                            // Assuming you want the first item in "choices" array
+                            if (choicesArray.length() > 0) {
+                                JSONObject firstChoice = choicesArray.getJSONObject(0);
+                                // Get the "message" object
+                                JSONObject messageObject = firstChoice.getJSONObject("message");
+                                // Extract the "content" string
+                                String content = messageObject.getString("content");
+
+                                // Print the content
+                                mottoText.setText(content);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle error
+                        error.printStackTrace();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "Bearer " + chatGPTApiKey);
+                return headers;
+            }
+        };
+
+        // Add the request to the RequestQueue
+        requestQueue.add(jsonObjectRequest);
+        Log.v("result", String.valueOf(jsonObjectRequest));
+
     }
 
     public void backButtonClick(View view){

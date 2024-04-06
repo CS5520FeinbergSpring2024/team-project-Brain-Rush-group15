@@ -72,7 +72,7 @@ public class MakeActivity extends AppCompatActivity {
                         choice2String, choice3String, choice4String, answerSpin, currentTime.toString(),
                         "MultipleChoice", likes, dislikes, "1","5");
                 mDatabase = FirebaseDatabase.getInstance().getReference();
-                mDatabase.child("question").child(String.valueOf(currentTime)).setValue(question);
+                mDatabase.child("Question").child(String.valueOf(currentTime) + " " + question.creatorId).setValue(question);
                 Toast.makeText(getBaseContext(), "You made a question!",Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(MakeActivity.this, MainActivity.class));
             }

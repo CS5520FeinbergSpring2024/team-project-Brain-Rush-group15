@@ -22,9 +22,9 @@ public class User implements Parcelable {
     private Date date_created;
     private int no_of_likes;
     private int no_of_dislikes;
-    private Set<Long> questions_created;
-    private Set<Long> questions_answered;
-    private Set<Long> daily_question_answered;
+    private List<String> questions_created;
+    private List<String> questions_answered;
+    private List<String> daily_question_answered;
 
     public User(String name) {
         this.name = name;
@@ -34,9 +34,9 @@ public class User implements Parcelable {
         this.date_created = new Date();
         this.no_of_dislikes = 0;
         this.no_of_likes = 0;
-        this.questions_answered = new HashSet<>();
-        this.questions_created = new HashSet<>();
-        this.daily_question_answered = new HashSet<>();
+        this.questions_answered = new ArrayList<>();
+        this.questions_created = new ArrayList<>();
+        this.daily_question_answered = new ArrayList<>();
     }
 
     public String getName() {
@@ -67,28 +67,37 @@ public class User implements Parcelable {
         return no_of_dislikes;
     }
 
-    public Set<Long> getQuestions_created() {
+    public List<String> getQuestions_created() {
         return questions_created;
     }
 
-    public Set<Long> getQuestions_answered() {
+    public List<String> getQuestions_answered() {
         return questions_answered;
     }
 
-    public Set<Long> getDaily_question_answered() {
+    public List<String> getDaily_question_answered() {
         return daily_question_answered;
     }
 
-    public void add_questions_created(long id){
-        this.questions_created.add(id);
+    public void add_questions_created(String id){
+        Set<String> set = new HashSet<>(questions_created);
+        if(!set.contains(id)){
+            this.questions_created.add(id);
+        }
     }
 
-    public void add_questions_answered(long id){
-        this.questions_answered.add(id);
+    public void add_questions_answered(String id){
+        Set<String> set = new HashSet<>(questions_answered);
+        if(!set.contains(id)){
+            this.questions_answered.add(id);
+        }
     }
 
-    public void add_daily_question_answered(long id){
-        this.daily_question_answered.add(id);
+    public void add_daily_question_answered(String id){
+        Set<String> set = new HashSet<>(daily_question_answered);
+        if(!set.contains(id)){
+            this.daily_question_answered.add(id);
+        }
     }
 
     public int increment_likes(){
@@ -101,13 +110,54 @@ public class User implements Parcelable {
         return this.no_of_dislikes;
     }
 
+    // Parcelable implementation
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(name);
+        dest.writeString(picture != null ? picture : defaultUrl);
+        dest.writeInt(experience);
+        dest.writeInt(score);
+        dest.writeLong(date_created != null ? date_created.getTime() : -1L);
+        dest.writeInt(no_of_likes);
+        dest.writeInt(no_of_dislikes);
+        dest.writeList(questions_created);
+        dest.writeList(questions_answered);
+        dest.writeList(daily_question_answered);
     }
+
+    protected User(Parcel in) {
+        id = in.readLong();
+        name = in.readString();
+        picture = in.readString();
+        experience = in.readInt();
+        score = in.readInt();
+        long tmpDateCreated = in.readLong();
+        date_created = tmpDateCreated == -1L ? null : new Date(tmpDateCreated);
+        no_of_likes = in.readInt();
+        no_of_dislikes = in.readInt();
+        questions_created = new ArrayList<>();
+        in.readList(questions_created, Long.class.getClassLoader());
+        questions_answered = new ArrayList<>();
+        in.readList(questions_answered, Long.class.getClassLoader());
+        daily_question_answered = new ArrayList<>();
+        in.readList(daily_question_answered, Long.class.getClassLoader());
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

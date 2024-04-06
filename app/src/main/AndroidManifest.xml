@@ -42,6 +42,9 @@
             android:name=".DailyQuestionsActivity"
             android:exported="false" />
         <activity
+            android:name=".DailyQuestionProblemPage"
+            android:exported="false" />
+        <activity
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity android:name="edu.northeastern.brainrush.panelactivity" />

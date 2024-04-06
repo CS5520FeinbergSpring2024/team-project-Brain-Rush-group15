@@ -22,6 +22,7 @@ public class Question {
     public ArrayList<String> dislikes;
     public String creatorId;
     public String expValue;
+    public String id;
 
 
     public Question(){
@@ -44,5 +45,6 @@ public class Question {
         this.dislikes = dislikes;
         this.creatorId = creatorId;
         this.expValue = expValue;
+        this.id = this.dateCreated + " " + creatorId;
     }
 }
