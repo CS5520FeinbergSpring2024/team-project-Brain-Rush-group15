@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="What was Antonie van Leeuwenhoek's contribution to the field of microbiology?"
+        android:text=""
         android:textSize="18sp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
@@ -51,24 +51,28 @@
         android:orientation="vertical">
 
         <RadioButton
+            android:id="@+id/option1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="The classification of microbial phylogeny" />
+            android:text="" />
 
         <RadioButton
+            android:id="@+id/option2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="His development of the earliest microscopes, leading to improvements in magnification" />
+            android:text="" />
 
         <RadioButton
+            android:id="@+id/option3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="The development of vaccines" />
+            android:text="" />
 
         <RadioButton
+            android:id="@+id/option4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="The discovery of viruses" />
+            android:text="" />
     </RadioGroup>
 
 

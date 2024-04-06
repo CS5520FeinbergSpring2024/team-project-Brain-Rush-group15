@@ -22,9 +22,9 @@ public class User implements Parcelable {
     private Date date_created;
     private int no_of_likes;
     private int no_of_dislikes;
-    private List<Long> questions_created;
-    private List<Long> questions_answered;
-    private List<Long> daily_question_answered;
+    private List<String> questions_created;
+    private List<String> questions_answered;
+    private List<String> daily_question_answered;
 
     public User(String name) {
         this.name = name;
@@ -67,34 +67,34 @@ public class User implements Parcelable {
         return no_of_dislikes;
     }
 
-    public List<Long> getQuestions_created() {
+    public List<String> getQuestions_created() {
         return questions_created;
     }
 
-    public List<Long> getQuestions_answered() {
+    public List<String> getQuestions_answered() {
         return questions_answered;
     }
 
-    public List<Long> getDaily_question_answered() {
+    public List<String> getDaily_question_answered() {
         return daily_question_answered;
     }
 
-    public void add_questions_created(long id){
-        Set<Long> set = new HashSet<>(questions_created);
+    public void add_questions_created(String id){
+        Set<String> set = new HashSet<>(questions_created);
         if(!set.contains(id)){
             this.questions_created.add(id);
         }
     }
 
-    public void add_questions_answered(long id){
-        Set<Long> set = new HashSet<>(questions_answered);
+    public void add_questions_answered(String id){
+        Set<String> set = new HashSet<>(questions_answered);
         if(!set.contains(id)){
             this.questions_answered.add(id);
         }
     }
 
-    public void add_daily_question_answered(long id){
-        Set<Long> set = new HashSet<>(daily_question_answered);
+    public void add_daily_question_answered(String id){
+        Set<String> set = new HashSet<>(daily_question_answered);
         if(!set.contains(id)){
             this.daily_question_answered.add(id);
         }
