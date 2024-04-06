@@ -13,16 +13,21 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
+import edu.northeastern.brainrush.model.User;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
     private Picasso picasso;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Set the user, change later
+        user = new User("Tom");
 
         //Construct singleton instance for Picasso
         File httpCacheDirectory = new File(this.getCacheDir(), "picasso-cache");
@@ -43,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openUserFile(View v){
-        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
         Toast.makeText(this, "user file clicked", Toast.LENGTH_SHORT).show();
     }
 
@@ -53,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openDashboard(View v){
-        startActivity(new Intent(MainActivity.this, DailyQuestionsActivity.class));
+        Intent intent = new Intent(MainActivity.this, DailyQuestionsActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
         Toast.makeText(this, "dashboard clicked", Toast.LENGTH_SHORT).show();
     }
 

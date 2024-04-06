@@ -36,12 +36,15 @@ public class DailyQuestionsActivity extends AppCompatActivity {
         Date now = new Date();
         dateSelected = String.valueOf(now.getMonth()+1) + "-" + (now.getDate()) + "-" + (now.getYear()+1900);
 
-        //Set the user, change later
-        user = new User("tom");
-        user.add_daily_question_answered("4-5-2024");
-        user.add_daily_question_answered("4-1-2024");
-        user.add_daily_question_answered("4-2-2024");
-        user.add_daily_question_answered("4-3-2024");
+        //Set the user
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            //Setting up the date selected from the previous page
+            user = (User) extras.get("user");
+            user.add_daily_question_answered("4-1-2024");
+            user.add_daily_question_answered("4-2-2024");
+            user.add_daily_question_answered("4-3-2024");
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_question_main_page);

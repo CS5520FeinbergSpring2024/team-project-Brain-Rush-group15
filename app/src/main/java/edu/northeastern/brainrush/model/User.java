@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 public class User implements Parcelable {
-    private final String defaultUrl = "https://i.imgur.com/DvpvklR.png";
+    private final String defaultUrl = "gs://brain-rush-db21a.appspot.com/profilePictures/default_user.jpeg";
     private long id;
     private String name;
     private String picture;
@@ -37,6 +37,10 @@ public class User implements Parcelable {
         this.questions_answered = new ArrayList<>();
         this.questions_created = new ArrayList<>();
         this.daily_question_answered = new ArrayList<>();
+    }
+
+    public void addExperience(int experiences){
+        this.experience += experiences;
     }
 
     public String getName() {

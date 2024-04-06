@@ -44,6 +44,7 @@ public class DailyQuestionProblemPage extends AppCompatActivity {
     private String correct_answer;
     private String question_id;
     private String date;
+    private String expValue;
     private User user;
 
     @Override
@@ -114,6 +115,7 @@ public class DailyQuestionProblemPage extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     if(snapshot.child("id").getValue(String.class).equals(question_id)){
                         // Found the matching id
+                        expValue = snapshot.child("expValue").getValue(String.class);
                         questionHeader.setText(snapshot.child("context").getValue(String.class));
                         option1.setText(snapshot.child("choice1").getValue(String.class));
                         option2.setText(snapshot.child("choice2").getValue(String.class));
@@ -133,8 +135,11 @@ public class DailyQuestionProblemPage extends AppCompatActivity {
 
     public void setCorrect_answer_view(){
         DatabaseReference userReference = FirebaseDatabase.getInstance().getReference("User");
-        user.add_daily_question_answered(date);
-        user.add_questions_answered(question_id);
+        if(!user.getDaily_question_answered().contains(date)){
+            user.add_daily_question_answered(date);
+            user.add_questions_answered(question_id);
+            user.addExperience(Integer.parseInt(expValue));
+        }
         userReference.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {

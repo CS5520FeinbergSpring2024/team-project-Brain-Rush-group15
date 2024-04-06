@@ -64,6 +64,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String picturePathString;
     private StorageReference profilePicRef;
     private String chatGPTApiKey;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -81,7 +82,12 @@ public class ProfileActivity extends AppCompatActivity {
         mottoText = findViewById(R.id.mottoText);
 
         //Change later after get intent from previous page
-        String userName = "tom";
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            //Setting up the date selected from the previous page
+            user = (User) extras.get("user");
+        }
+        String userName = user.getName();
         picturePathString = "profilePictures/" + userName +".jpg";
 
         //Initialize database reference
