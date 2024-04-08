@@ -37,14 +37,6 @@ public class MakeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_make);
         // date created
         currentTime = Calendar.getInstance().getTime();
-        // likes -- set here
-        // dislikes -- set here
-        // exp value -- set here
-        // createrId -- get from other activity
-        // type: multiple choice for now -- set here
-        // subjects -- from user
-        // context/problem -- from user
-        // choices 1- 2- 3- 4- -- from user
 
         makeDropdown();
         subjectSpinner = findViewById(R.id.subjectSpinner);
