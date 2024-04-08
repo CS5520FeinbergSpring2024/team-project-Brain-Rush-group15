@@ -88,6 +88,12 @@ public class ProfileActivity extends AppCompatActivity {
             user = (User) extras.get("user");
         }
         String userName = user.getName();
+        name.setText(userName);
+        level.setText("level: " + user.getExperience());
+        score.setText("Score: " + user.getScore());
+
+
+
         picturePathString = "profilePictures/" + userName +".jpg";
 
         //Initialize database reference
