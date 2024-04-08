@@ -26,9 +26,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //
-
-        user = new User("tom");
+        //Set the user
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            //Setting up the date selected from the previous page
+            user = (User) extras.get("user");
+        }
 
         //Construct singleton instance for Picasso
         File httpCacheDirectory = new File(this.getCacheDir(), "picasso-cache");

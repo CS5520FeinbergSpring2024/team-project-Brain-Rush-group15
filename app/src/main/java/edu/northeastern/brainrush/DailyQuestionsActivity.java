@@ -41,9 +41,6 @@ public class DailyQuestionsActivity extends AppCompatActivity {
         if (extras != null) {
             //Setting up the date selected from the previous page
             user = (User) extras.get("user");
-            user.add_daily_question_answered("4-1-2024");
-            user.add_daily_question_answered("4-2-2024");
-            user.add_daily_question_answered("4-3-2024");
         }
 
         super.onCreate(savedInstanceState);

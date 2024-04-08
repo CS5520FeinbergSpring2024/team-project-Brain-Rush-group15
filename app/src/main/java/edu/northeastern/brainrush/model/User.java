@@ -26,6 +26,10 @@ public class User implements Parcelable {
     private List<String> questions_answered;
     private List<String> daily_question_answered;
 
+    public User() {
+
+    }
+
     public User(String name) {
         this.name = name;
         this.picture = defaultUrl;
@@ -37,6 +41,19 @@ public class User implements Parcelable {
         this.questions_answered = new ArrayList<>();
         this.questions_created = new ArrayList<>();
         this.daily_question_answered = new ArrayList<>();
+    }
+
+    public User(String name, String picture, int experience, int score, Date date_created, int no_of_likes, int no_of_dislikes, List<String> questions_created, List<String> questions_answered, List<String> daily_question_answered) {
+        this.name = name;
+        this.picture = picture;
+        this.experience = experience;
+        this.score = score;
+        this.date_created = date_created;
+        this.no_of_likes = no_of_likes;
+        this.no_of_dislikes = no_of_dislikes;
+        this.questions_created = questions_created;
+        this.questions_answered = questions_answered;
+        this.daily_question_answered = daily_question_answered;
     }
 
     public void addExperience(int experiences){
