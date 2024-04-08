@@ -33,7 +33,7 @@ public class Question_dummy {
         this.id = no;
         this.subjects = "Biology";
         this.creater_id = "dummy creater id";
-        this.question_body = "Dummy dummy dummy dummy dummy dummy?";
+        this.question_body = "Dummy dummy dummy dummy dummy?";
 //        this.choices = new String[4];
 //        choices[0] = "dummy";
 //        choices[1] = "dummy";
