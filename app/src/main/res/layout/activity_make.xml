@@ -50,13 +50,14 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
-        android:text="@string/enter_problem_here"
+        android:hint="@string/enter_the_problem_here"
         app:layout_constraintBottom_toTopOf="@+id/choice1Edittext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.437"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.869" />
+        app:layout_constraintVertical_bias="0.869"
+        android:autofillHints="Enter the problem" />
 
     <TextView
         android:id="@+id/choice1Text"

@@ -14,4 +14,5 @@
     <string name="choice_4">Choice 4:</string>
     <string name="correct_answer_is">Correct answer is:</string>
     <string name="makebutton">Make</string>
+    <string name="enter_the_problem_here">Enter the problem here</string>
 </resources>
