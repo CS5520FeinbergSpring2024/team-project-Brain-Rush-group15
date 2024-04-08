@@ -1,5 +1,6 @@
 package edu.northeastern.brainrush.match;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,8 +21,13 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
+import edu.northeastern.brainrush.LoginActivity;
+import edu.northeastern.brainrush.MainActivity;
 import edu.northeastern.brainrush.R;
 
 public class MatchingDemo extends AppCompatActivity {
@@ -42,6 +48,17 @@ public class MatchingDemo extends AppCompatActivity {
         userName = findViewById(R.id.username);
         roomView = findViewById(R.id.room_id);
         roomId = null;
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(roomId != null){
+            // when the match is correctly finished
+            exitClicked(null);
+            roomId = null;
+            matching = false;
+            roomView.setText("RoomId: None");
+        }
     }
 
     public void matchClicked(View v){
@@ -116,6 +133,9 @@ public class MatchingDemo extends AppCompatActivity {
                         @Override
                         public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
                             Log.v("trans", "Transaction completed");
+                            Intent intent = new Intent(MatchingDemo.this, QuestionDemo.class);
+                            intent.putExtra("roomId", roomId);
+                            startActivity(intent);
                         }
                     });
 
@@ -146,8 +166,9 @@ public class MatchingDemo extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if(snapshot.exists()){
                                 String status = (String) snapshot.getValue();
-                                if(status == null || status.equals("Waiting")){return;}
-                                roomId = snapshot.getKey();
+                                if(status == null || status.equals("Waiting")){ return;}
+                                roomId = snapshot.getValue().toString();
+                                getAndSetQuestions();
                                 myRef.child("Match").child(roomId).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -174,6 +195,9 @@ public class MatchingDemo extends AppCompatActivity {
                                     }
                                 });
 
+                                Intent intent = new Intent(MatchingDemo.this, QuestionDemo.class);
+                                intent.putExtra("roomId", roomId);
+                                startActivity(intent);
                             }
                         }
 
@@ -188,6 +212,7 @@ public class MatchingDemo extends AppCompatActivity {
     }
 
     public void exitClicked(View v){
+//        Log.v("exit", roomId);
         if(!matching){
             Toast.makeText(this, "is not in a match", Toast.LENGTH_SHORT).show();
         }
@@ -201,5 +226,15 @@ public class MatchingDemo extends AppCompatActivity {
         }
         matching = false;
         roomView.setText("RoomId: None");
+    }
+
+    public void getAndSetQuestions(){
+        List<String> questions = new ArrayList<>(Arrays.asList("q1", "q2", "q3", "q4", "q5"));
+        for (int i = 0; i < questions.size(); i++) {
+            // Set each string with index as key under 'MatchPool/Match/Questions'
+            myRef.child("Match")
+                    .child(roomId).child("Questions").child(String.valueOf(i))
+                    .setValue(questions.get(i));
+        }
     }
 }

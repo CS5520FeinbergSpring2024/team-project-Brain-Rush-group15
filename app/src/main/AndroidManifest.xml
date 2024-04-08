@@ -36,6 +36,9 @@
             android:name=".LearnActivity"
             android:exported="false" />
         <activity
+            android:name=".match.QuestionDemo"
+            android:exported="false" />
+        <activity
             android:name=".match.MatchingDemo"
             android:exported="true">
             <intent-filter>
