@@ -207,4 +207,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.963" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/checkAnimation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        app:lottie_autoPlay="false"
+        app:lottie_rawRes="@raw/checkanimation"
+        app:lottie_loop="false"
+        android:visibility="gone"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
