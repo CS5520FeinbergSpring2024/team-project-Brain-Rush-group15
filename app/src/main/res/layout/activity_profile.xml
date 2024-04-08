@@ -50,4 +50,17 @@
         android:text="Score: 0"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
+    <Button
+        android:id="@+id/generateMotto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="generateMotto"
+        android:text="Generate Random Motto" />
+
+    <TextView
+        android:id="@+id/mottoText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Press the button and a random motto will be generated!" />
+
 </LinearLayout>

@@ -12,6 +12,9 @@ plugins {
 android {
     namespace = "edu.northeastern.brainrush"
     compileSdk = 34
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "edu.northeastern.brainrush"
@@ -19,6 +22,7 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        buildConfigField("String", "ChatGPT_API_KEY", "${property("chatGPT_API_KEY")}")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -52,8 +56,11 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-database")
+
     implementation("com.squareup.okhttp3:okhttp:$okhttpVersion")
+    implementation("com.google.firebase:firebase-database:20.3.1")
+    implementation("com.github.prolificinteractive:material-calendarview:2.0.0")
+    implementation("com.jakewharton.threetenabp:threetenabp:1.2.0")
 
 
     testImplementation("junit:junit:4.13.2")
