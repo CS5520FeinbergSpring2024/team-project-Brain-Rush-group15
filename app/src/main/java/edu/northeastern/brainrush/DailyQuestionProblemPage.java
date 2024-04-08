@@ -143,7 +143,7 @@ public class DailyQuestionProblemPage extends AppCompatActivity {
         userReference.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                userReference.child("0").setValue(user);
+                userReference.child(user.getName()).setValue(user);
                 return Transaction.success(mutableData);
             }
 

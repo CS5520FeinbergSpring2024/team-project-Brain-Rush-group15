@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText userName;
 
     DatabaseReference myRef;
+    private User user = new User("1");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,20 +36,18 @@ public class LoginActivity extends AppCompatActivity {
 
     public void loginClicked(View v){
         String name = userName.getText().toString();
-        myRef.equalTo(name).addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                        String username = userSnapshot.getKey();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        intent.putExtra("username", username);
-                        startActivity(intent);
-                    }
+                    user = dataSnapshot.getValue(user.getClass());
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("user", user);
+                    startActivity(intent);
                 } else {
                     register(name);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("username", name);
+                    intent.putExtra("user", user);
                     startActivity(intent);
                 }
             }
@@ -61,8 +60,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void register(String userName){
-        User new_user = new User(userName);
-        myRef.child(userName).setValue(new_user)
+        user = new User(userName);
+        myRef.child(userName).setValue(user)
                 .addOnSuccessListener(s -> {
                     // Handle success
                     Log.d("AddNewUser", "User added successfully");
