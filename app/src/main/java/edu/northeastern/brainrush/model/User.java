@@ -43,6 +43,12 @@ public class User implements Parcelable {
         this.experience += experiences;
     }
 
+    public int getLevel(){
+        int ret = 0;
+
+        return ret;
+    }
+
     public String getName() {
         return name;
     }
