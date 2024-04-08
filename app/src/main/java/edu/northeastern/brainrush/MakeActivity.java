@@ -53,7 +53,7 @@ public class MakeActivity extends AppCompatActivity {
         answerSpinner = findViewById(R.id.correctAnswerSpinner);
         makeButton = findViewById(R.id.makeButton);
 
-
+        makeButton.setClickable(true);
 
         makeButtonListener();
         checkAnimationListener();
@@ -104,6 +104,8 @@ public class MakeActivity extends AppCompatActivity {
 
                 // play the animation after the user make the question
                 checkAnimation();
+                // user should not be able to click the make button again if they made the question successfully
+                makeButton.setClickable(false);
             }
         });
     }
