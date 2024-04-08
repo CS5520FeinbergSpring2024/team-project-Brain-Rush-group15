@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+        android:oneshot="true"> <!-- Set to true to run animation only once -->
+
+        <item android:drawable="@drawable/default_user" android:duration="1000" />
+        <item android:drawable="@drawable/graduation_hat_60" android:duration="1000" />
+        <!-- Add more frames here -->
+
+    </animation-list>
+</set>
