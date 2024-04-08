@@ -20,6 +20,7 @@ import okhttp3.OkHttpClient;
 public class MainActivity extends AppCompatActivity {
     private Picasso picasso;
     private User user;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             //Setting up the date selected from the previous page
+            uid = extras.getString("id");
             user = (User) extras.get("user");
         }
 
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     public void openUserFile(View v){
         Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
         intent.putExtra("user", user);
+        intent.putExtra("id", uid);
         startActivity(intent);
         Toast.makeText(this, "user file clicked", Toast.LENGTH_SHORT).show();
     }
@@ -60,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     public void openMail(View v){
         Intent intent = new Intent(MainActivity.this, panelactivity.class);
         intent.putExtra("user", user);
+        intent.putExtra("id", uid);
         startActivity(intent);
         Toast.makeText(this, "mail clicked", Toast.LENGTH_SHORT).show();
     }
@@ -67,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     public void openDashboard(View v){
         Intent intent = new Intent(MainActivity.this, DailyQuestionsActivity.class);
         intent.putExtra("user", user);
+        intent.putExtra("id", uid);
         startActivity(intent);
         Toast.makeText(this, "dashboard clicked", Toast.LENGTH_SHORT).show();
     }
@@ -74,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     public void openLearn(View v){
         Intent intent = new Intent(MainActivity.this, LearnActivity.class);
         intent.putExtra("user", user);
+        intent.putExtra("id", uid);
         startActivity(intent);
         Toast.makeText(this, "learn clicked", Toast.LENGTH_SHORT).show();
     }
@@ -81,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     public void openMake(View v){
         Intent intent = new Intent(MainActivity.this, MakeActivity.class);
         intent.putExtra("user", user);
+        intent.putExtra("id", uid);
         startActivity(intent);
         Toast.makeText(this, "make clicked", Toast.LENGTH_SHORT).show();
     }
@@ -88,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
     public void openCompete(View v){
         Intent intent = new Intent(MainActivity.this, CompeteActivity.class);
         intent.putExtra("user", user);
+        intent.putExtra("id", uid);
         startActivity(intent);
         Toast.makeText(this, "compete clicked", Toast.LENGTH_SHORT).show();
     }

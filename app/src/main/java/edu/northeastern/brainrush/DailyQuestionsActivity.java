@@ -30,6 +30,7 @@ public class DailyQuestionsActivity extends AppCompatActivity {
     private MaterialCalendarView calendar;
     private String dateSelected;
     private User user;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -41,6 +42,7 @@ public class DailyQuestionsActivity extends AppCompatActivity {
         if (extras != null) {
             //Setting up the date selected from the previous page
             user = (User) extras.get("user");
+            id = extras.getString("id");
         }
 
         super.onCreate(savedInstanceState);
@@ -83,7 +85,11 @@ public class DailyQuestionsActivity extends AppCompatActivity {
     }
 
     public void backToMainPage(){
-        startActivity(new Intent(this, MainActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("date", dateSelected);
+        intent.putExtra("user", user);
+        intent.putExtra("id", id);
+        startActivity(intent);
     }
 
     public void backButtonClick(View view){
@@ -99,6 +105,7 @@ public class DailyQuestionsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, DailyQuestionProblemPage.class);
         intent.putExtra("date", dateSelected);
         intent.putExtra("user", user);
+        intent.putExtra("id", id);
         startActivity(intent);
     }
 }

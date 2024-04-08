@@ -46,6 +46,7 @@ public class DailyQuestionProblemPage extends AppCompatActivity {
     private String date;
     private String expValue;
     private User user;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,7 @@ public class DailyQuestionProblemPage extends AppCompatActivity {
             //Setting up the date selected from the previous page
             date = extras.getString("date");
             user = (User) extras.get("user");
+            id = extras.getString("id");
             dateHeader.setText(date);
             getQuestionId(date);
             getQuestionContext();
@@ -143,7 +145,7 @@ public class DailyQuestionProblemPage extends AppCompatActivity {
         userReference.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                userReference.child(user.getName()).setValue(user);
+                userReference.child(id).setValue(user);
                 return Transaction.success(mutableData);
             }
 
@@ -196,6 +198,9 @@ public class DailyQuestionProblemPage extends AppCompatActivity {
             lottie.playAnimation();
         }
         lottie.setVisibility(View.INVISIBLE);
-        startActivity(new Intent(this, MainActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("user", user);
+        intent.putExtra("id", id);
+        startActivity(intent);
     }
 }

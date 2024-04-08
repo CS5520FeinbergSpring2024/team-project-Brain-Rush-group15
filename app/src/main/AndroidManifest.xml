@@ -51,6 +51,9 @@
             android:name=".DailyQuestionsActivity"
             android:exported="false" />
         <activity
+            android:name=".SignupActivity"
+            android:exported="false" />
+        <activity
             android:name=".DailyQuestionProblemPage"
             android:exported="false" />
         <activity

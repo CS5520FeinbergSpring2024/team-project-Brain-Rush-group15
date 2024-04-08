@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class User implements Parcelable {
     private final String defaultUrl = "gs://brain-rush-db21a.appspot.com/profilePictures/default_user.jpeg";
-    private long id;
+    private String id;
     private String name;
     private String picture;
     private int experience;
@@ -31,6 +31,20 @@ public class User implements Parcelable {
     }
 
     public User(String name) {
+        this.name = name;
+        this.picture = defaultUrl;
+        this.experience = 0;
+        this.score = 0;
+        this.date_created = new Date();
+        this.no_of_dislikes = 0;
+        this.no_of_likes = 0;
+        this.questions_answered = new ArrayList<>();
+        this.questions_created = new ArrayList<>();
+        this.daily_question_answered = new ArrayList<>();
+    }
+
+    public User(String name, String id) {
+        this.id = id;
         this.name = name;
         this.picture = defaultUrl;
         this.experience = 0;
@@ -145,7 +159,7 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
+        dest.writeString(id);
         dest.writeString(name);
         dest.writeString(picture != null ? picture : defaultUrl);
         dest.writeInt(experience);
@@ -159,7 +173,7 @@ public class User implements Parcelable {
     }
 
     protected User(Parcel in) {
-        id = in.readLong();
+        id = in.readString();
         name = in.readString();
         picture = in.readString();
         experience = in.readInt();
