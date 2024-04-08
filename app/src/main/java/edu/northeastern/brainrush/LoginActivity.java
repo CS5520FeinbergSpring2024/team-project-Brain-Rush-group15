@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        myRef = FirebaseDatabase.getInstance().getReference("User");
+        myRef = FirebaseDatabase.getInstance().getReference().child("User");
         userName = findViewById(R.id.username);
     }
 
