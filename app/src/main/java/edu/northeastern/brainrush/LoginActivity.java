@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import edu.northeastern.brainrush.model.TestUser;
+import edu.northeastern.brainrush.model.User;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -60,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void register(String userName){
-        TestUser new_user = new TestUser(userName);
+        User new_user = new User(userName);
         myRef.child(userName).setValue(new_user)
                 .addOnSuccessListener(s -> {
                     // Handle success
@@ -71,5 +72,4 @@ public class LoginActivity extends AppCompatActivity {
                     Log.w("AddNewUser", "Error adding user", e);
                 });
     }
-
 }

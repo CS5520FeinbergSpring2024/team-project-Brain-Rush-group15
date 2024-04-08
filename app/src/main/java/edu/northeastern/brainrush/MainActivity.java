@@ -26,6 +26,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //
+
+        user = new User("tom");
+
         //Construct singleton instance for Picasso
         File httpCacheDirectory = new File(this.getCacheDir(), "picasso-cache");
         Cache cache = new Cache(httpCacheDirectory, 10 * 1024 * 1024); // 10 MiB
@@ -36,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
             picasso = new Picasso.Builder(this)
                     .downloader(okHttp3Downloader)
                     .build();
-            Picasso.setSingletonInstance(picasso);
             Picasso.setSingletonInstance(picasso);
         } catch (IllegalStateException e) {
             // Handle the exception if the singleton instance was already set
@@ -52,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openMail(View v){
-        startActivity(new Intent(MainActivity.this, panelactivity.class));//go to mail
+        Intent intent = new Intent(MainActivity.this, panelactivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
         Toast.makeText(this, "mail clicked", Toast.LENGTH_SHORT).show();
     }
 
@@ -64,17 +69,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openLearn(View v){
-        startActivity(new Intent(MainActivity.this, LearnActivity.class));
+        Intent intent = new Intent(MainActivity.this, LearnActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
         Toast.makeText(this, "learn clicked", Toast.LENGTH_SHORT).show();
     }
 
     public void openMake(View v){
-        startActivity(new Intent(MainActivity.this, MakeActivity.class));
+        Intent intent = new Intent(MainActivity.this, MakeActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
         Toast.makeText(this, "make clicked", Toast.LENGTH_SHORT).show();
     }
 
     public void openCompete(View v){
-        startActivity(new Intent(MainActivity.this, CompeteActivity.class));
+        Intent intent = new Intent(MainActivity.this, CompeteActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
         Toast.makeText(this, "compete clicked", Toast.LENGTH_SHORT).show();
     }
 
