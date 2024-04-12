@@ -1,7 +1,9 @@
 package edu.northeastern.brainrush;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -30,14 +33,16 @@ public class MakeActivity extends AppCompatActivity {
 
     Button makeButton;
     Date currentTime;
+    private LottieAnimationView animationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make);
-        // date created
-        currentTime = Calendar.getInstance().getTime();
+        // date created;
 
+        currentTime = Calendar.getInstance().getTime();
+        animationView = findViewById(R.id.checkAnimation);
         makeDropdown();
         subjectSpinner = findViewById(R.id.subjectSpinner);
         contextEditText = findViewById(R.id.contextEdittext);
@@ -48,27 +53,11 @@ public class MakeActivity extends AppCompatActivity {
         answerSpinner = findViewById(R.id.correctAnswerSpinner);
         makeButton = findViewById(R.id.makeButton);
 
-        makeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                subjectSpin = subjectSpinner.getSelectedItem().toString();
-                contextString = contextEditText.getText().toString();
-                choice1String = choice1EditText.getText().toString();
-                choice2String = choice2EditText.getText().toString();
-                choice3String = choice3EditText.getText().toString();
-                choice4String = choice4EditText.getText().toString();
-                answerSpin = answerSpinner.getSelectedItem().toString();
-                ArrayList<String> likes = new ArrayList<>();
-                ArrayList<String> dislikes = new ArrayList<>();
-                Question question = new Question(subjectSpin, contextString, choice1String,
-                        choice2String, choice3String, choice4String, answerSpin, currentTime.toString(),
-                        "MultipleChoice", likes, dislikes, "1","5");
-                mDatabase = FirebaseDatabase.getInstance().getReference();
-                mDatabase.child("Question").child(String.valueOf(currentTime) + " " + question.creatorId).setValue(question);
-                Toast.makeText(getBaseContext(), "You made a question!",Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MakeActivity.this, MainActivity.class));
-            }
-        });
+        makeButton.setClickable(true);
+
+        makeButtonListener();
+        checkAnimationListener();
+
     }
 
     public void makeDropdown() {
@@ -92,6 +81,66 @@ public class MakeActivity extends AppCompatActivity {
         );
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner1.setAdapter(adapter1);
+    }
+
+    public void makeButtonListener() {
+        makeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subjectSpin = subjectSpinner.getSelectedItem().toString();
+                contextString = contextEditText.getText().toString();
+                choice1String = choice1EditText.getText().toString();
+                choice2String = choice2EditText.getText().toString();
+                choice3String = choice3EditText.getText().toString();
+                choice4String = choice4EditText.getText().toString();
+                answerSpin = answerSpinner.getSelectedItem().toString();
+                ArrayList<String> likes = new ArrayList<>();
+                ArrayList<String> dislikes = new ArrayList<>();
+                Question question = new Question(subjectSpin, contextString, choice1String,
+                        choice2String, choice3String, choice4String, answerSpin, currentTime.toString(),
+                        "MultipleChoice", likes, dislikes, "1","5");
+                mDatabase = FirebaseDatabase.getInstance().getReference();
+                mDatabase.child("Question").child(String.valueOf(currentTime) + " " + question.creatorId).setValue(question);
+
+                // play the animation after the user make the question
+                checkAnimation();
+                // user should not be able to click the make button again if they made the question successfully
+                makeButton.setClickable(false);
+            }
+        });
+    }
+
+    public void checkAnimation() {
+        animationView.setVisibility(View.VISIBLE);
+        animationView.setAnimation(R.raw.checkanimation);
+        animationView.playAnimation();
+
+    }
+
+    public void checkAnimationListener() {
+        animationView.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(@NonNull Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(@NonNull Animator animation) {
+                animationView.setVisibility(View.GONE);
+                startActivity(new Intent(getBaseContext(), MainActivity.class));
+                Toast.makeText(getBaseContext(), "Thank you for the contribution!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAnimationCancel(@NonNull Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(@NonNull Animator animation) {
+
+            }
+        });
     }
 
 }
