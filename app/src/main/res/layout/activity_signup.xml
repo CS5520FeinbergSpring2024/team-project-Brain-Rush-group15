@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".SignupActivity">
 
     <!--  position ref  -->
     <androidx.constraintlayout.widget.Guideline
@@ -140,14 +140,20 @@
                 android:id="@+id/login_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Login"
+                android:text="Sign Up"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="36sp"
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/emailAddress"
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Username" />
+
+            <EditText
+                android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="Email" />
@@ -160,25 +166,13 @@
                 android:hint="Password"/>
 
             <Button
-                android:id="@+id/login_button"
+                android:id="@+id/create_button"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:text="Login"
+                android:layout_margin="30dp"
+                android:text="Create"
                 android:textSize="18sp"
-                android:onClick="loginClicked"/>
-            <Button
-                android:id="@+id/signup_button"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:text="Signup"
-                android:textSize="18sp"
-                android:onClick="signupClicked"/>
+                android:onClick="createClicked"/>
         </LinearLayout>
 
 
