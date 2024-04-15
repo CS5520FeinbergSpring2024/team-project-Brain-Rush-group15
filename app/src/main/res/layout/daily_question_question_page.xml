@@ -104,7 +104,6 @@
         android:text="Submit"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="8dp"
-        android:onClick="dailyQuestionSubmit"
         android:background="@android:color/holo_blue_dark"
         android:textColor="#FFF"/>
 

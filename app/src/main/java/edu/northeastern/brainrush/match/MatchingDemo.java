@@ -135,6 +135,7 @@ public class MatchingDemo extends AppCompatActivity {
                             Log.v("trans", "Transaction completed");
                             Intent intent = new Intent(MatchingDemo.this, QuestionDemo.class);
                             intent.putExtra("roomId", roomId);
+                            intent.putExtra("role", UserRole.Guest.getValue());
                             startActivity(intent);
                         }
                     });
@@ -197,6 +198,7 @@ public class MatchingDemo extends AppCompatActivity {
 
                                 Intent intent = new Intent(MatchingDemo.this, QuestionDemo.class);
                                 intent.putExtra("roomId", roomId);
+                                intent.putExtra("role", UserRole.Host.getValue());
                                 startActivity(intent);
                             }
                         }
