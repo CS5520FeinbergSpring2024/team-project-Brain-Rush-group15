@@ -9,12 +9,14 @@ public class MatchRoom {
     String guest;
     int host_heartBeat;
     int guest_heartBeat;
+    String winner;
 
     public MatchRoom(String host, String guest){
         this.host = host;
         this.guest = guest;
         this.host_heartBeat = 0;
         this.guest_heartBeat = 0;
+        this.winner = "Not Over";
     }
 
     public String getHost() {

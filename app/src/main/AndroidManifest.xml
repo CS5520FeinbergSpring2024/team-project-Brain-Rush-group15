@@ -30,7 +30,7 @@
             android:name=".MakeActivity"
             android:exported="false" />
         <activity
-            android:name=".CompeteActivity"
+            android:name=".match.MatchingDemo"
             android:exported="false" />
         <activity
             android:name=".LearnActivity"
@@ -39,7 +39,7 @@
             android:name=".match.QuestionDemo"
             android:exported="false" />
         <activity
-            android:name=".match.MatchingDemo"
+            android:name=".CompeteActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
