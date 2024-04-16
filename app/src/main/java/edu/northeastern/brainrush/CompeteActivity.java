@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,7 +39,7 @@ public class CompeteActivity extends AppCompatActivity {
     DatabaseReference matchRef;
     DatabaseReference questionRef;
     String roomId;
-    String currentName = "asd"; // temporary, change to intent extra later
+    String currentId; // temporary, change to intent extra later
     String subject;
 
 
@@ -59,6 +58,8 @@ public class CompeteActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner.
         subjectSpinner.setAdapter(adapter);
+
+        currentId = getIntent().getExtras().getString("id");
 
         matching = false;
         roomId = null;
@@ -115,7 +116,7 @@ public class CompeteActivity extends AppCompatActivity {
 
                     if(hostName == null){
                         // enter queue
-                        addHost(currentName);
+                        addHost(currentId);
                         return;
                     }
                     String finalHostName = hostName;
@@ -124,12 +125,12 @@ public class CompeteActivity extends AppCompatActivity {
                         @Override
                         public Transaction.Result doTransaction(MutableData mutableData) {
                             if(mutableData == null){
-                                addHost(currentName);
+                                addHost(currentId);
                                 return Transaction.abort();
                             }
 
-                            MatchRoom matchingRoom = new MatchRoom(finalHostName, currentName);
-                            String newId = finalHostName + "_" + currentName;
+                            MatchRoom matchingRoom = new MatchRoom(finalHostName, currentId);
+                            String newId = finalHostName + "_" + currentId;
                             matchRef.child("Match").child(newId).setValue(matchingRoom);
                             getAndSetQuestions();
                             mutableData.child("status").setValue(newId);
@@ -160,7 +161,7 @@ public class CompeteActivity extends AppCompatActivity {
                             Intent intent = new Intent(CompeteActivity.this, QuestionDemo.class);
                             intent.putExtra("roomId", roomId);
                             intent.putExtra("role", UserRole.Guest.getValue());
-                            intent.putExtra("username", currentName);
+                            intent.putExtra("userId", currentId);
                             startActivity(intent);
                         }
                     });
@@ -168,7 +169,7 @@ public class CompeteActivity extends AppCompatActivity {
 
                 } else {
                     // no, add to host, listen to change
-                    addHost(currentName);
+                    addHost(currentId);
                 }
             }
 
@@ -215,7 +216,7 @@ public class CompeteActivity extends AppCompatActivity {
                                 Intent intent = new Intent(CompeteActivity.this, QuestionDemo.class);
                                 intent.putExtra("roomId", roomId);
                                 intent.putExtra("role", UserRole.Host.getValue());
-                                intent.putExtra("username", currentName);
+                                intent.putExtra("userId", currentId);
                                 startActivity(intent);
                             }
                         }
@@ -232,7 +233,7 @@ public class CompeteActivity extends AppCompatActivity {
 
     public void exitClicked(){
         if(roomId == null){
-            matchRef.child("Host").child(currentName).removeValue();
+            matchRef.child("Host").child(currentId).removeValue();
         }
         else {
             matchRef.child("Match").child(roomId).removeValue();

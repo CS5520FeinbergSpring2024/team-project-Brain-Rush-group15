@@ -32,6 +32,8 @@ public class QuestionDemo extends AppCompatActivity {
 
     DatabaseReference roomRef;
     DatabaseReference heartBeatRef;
+
+    DatabaseReference userRef;
     DatabaseReference opponentHeartBeatRef;
     List<Question> questions;
     int currentQuestion;
@@ -47,7 +49,7 @@ public class QuestionDemo extends AppCompatActivity {
 
     AlertDialog resultDialog = null;
 
-    String userName;
+    String userId;
     UserRole role;
     int heartbeat = 0;
     int opponentHeartBeat = 0;
@@ -64,7 +66,7 @@ public class QuestionDemo extends AppCompatActivity {
 
         role = UserRole.fromValue(getIntent().getIntExtra("role", -1));
         String roomId = getIntent().getStringExtra("roomId");
-        userName = getIntent().getStringExtra("userName");
+        userId = getIntent().getStringExtra("userId");
 
         question = findViewById(R.id.question_header);
         choices = findViewById(R.id.options_container);
@@ -82,6 +84,7 @@ public class QuestionDemo extends AppCompatActivity {
             }});
         submit.setClickable(false);
 
+        userRef = FirebaseDatabase.getInstance().getReference("User").child(userId);
         roomRef = FirebaseDatabase.getInstance().getReference("MatchPool").child("Match").child(roomId);
         if(role.equals(UserRole.Host)){
             heartBeatRef = roomRef.child("host_heartBeat");
@@ -141,19 +144,12 @@ public class QuestionDemo extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
-                    int i = 0;
                     for(DataSnapshot data: snapshot.getChildren()){
                         if(data.getValue() != null) {
                             Question content = data.getValue(Question.class);
                             questions.add(content);
-                            i++;
                         }
                     }
-                    Log.v("fetch", String.valueOf(i));
-//                    if(i < 5){
-//                        questions.clear();
-//                        return;
-//                    }
                     if(questions.size() > 0) {
                         question.setText(questions.get(0).context);
                         option1.setText(questions.get(0).choice1);
@@ -183,9 +179,6 @@ public class QuestionDemo extends AppCompatActivity {
     }
 
     public void submitClicked(View v){
-//        int selectedRadioButtonId = choices.getCheckedRadioButtonId();
-//        Toast.makeText(this, "Option " + selectedRadioButtonId + "is selected", Toast.LENGTH_SHORT).show();
-        Log.v("submit", String.valueOf(currentQuestion) + " " + String.valueOf(questions.size()) );
         if(currentQuestion == questions.size() - 1){
             // check and conclude and exit
             finish_time = System.currentTimeMillis();
@@ -307,13 +300,30 @@ public class QuestionDemo extends AppCompatActivity {
                         timeCost.setText(String.format("Time: %dmin %ds", minutes, remainingSeconds));
                         if(winner.equals(String.valueOf(role.getValue()))){
                             header.setText("You win!");
-                            // do level up
+                            userRef.child("score").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(snapshot.exists()) {
+                                        int score = snapshot.getValue(Integer.class);
+                                        score += 20;
+                                        userRef.child("score").setValue(score);
+                                        finish.setVisibility(View.VISIBLE);
+                                        finish.setClickable(true);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    finish.setVisibility(View.VISIBLE);
+                                    finish.setClickable(true);
+                                }
+                            });
                         }
                         else{
                             header.setText("You Lose.");
+                            finish.setVisibility(View.VISIBLE);
+                            finish.setClickable(true);
                         }
-                        finish.setVisibility(View.VISIBLE);
-                        finish.setClickable(true);
                     }
                 }
             }
