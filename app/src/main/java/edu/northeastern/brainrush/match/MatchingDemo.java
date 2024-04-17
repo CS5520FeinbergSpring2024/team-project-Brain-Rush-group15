@@ -36,7 +36,6 @@ public class MatchingDemo extends AppCompatActivity {
     TextView roomView;
     DatabaseReference myRef;
     boolean matching;
-
     String roomId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +134,8 @@ public class MatchingDemo extends AppCompatActivity {
                             Log.v("trans", "Transaction completed");
                             Intent intent = new Intent(MatchingDemo.this, QuestionDemo.class);
                             intent.putExtra("roomId", roomId);
+                            intent.putExtra("role", UserRole.Guest.getValue());
+                            intent.putExtra("username", currentName);
                             startActivity(intent);
                         }
                     });
@@ -197,6 +198,7 @@ public class MatchingDemo extends AppCompatActivity {
 
                                 Intent intent = new Intent(MatchingDemo.this, QuestionDemo.class);
                                 intent.putExtra("roomId", roomId);
+                                intent.putExtra("role", UserRole.Host.getValue());
                                 startActivity(intent);
                             }
                         }

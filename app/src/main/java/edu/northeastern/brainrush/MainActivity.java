@@ -34,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
             uid = extras.getString("id");
             user = (User) extras.get("user");
         }
+        else{
+            uid = "test2";
+            user = new User("tester2");
+        }
 
         //Construct singleton instance for Picasso
         File httpCacheDirectory = new File(this.getCacheDir(), "picasso-cache");

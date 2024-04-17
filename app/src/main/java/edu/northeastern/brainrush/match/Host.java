@@ -10,4 +10,5 @@ public class Host {
     public String getStatus(){
         return this.status;
     }
+
 }
