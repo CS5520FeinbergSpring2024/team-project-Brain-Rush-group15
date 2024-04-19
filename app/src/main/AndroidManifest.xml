@@ -5,9 +5,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera"
+
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="false" />
 
     <application
@@ -21,11 +23,14 @@
         android:theme="@style/Theme.BrainRush"
         tools:targetApi="31">
         <activity
+            android:name=".Leaderboard"
+            android:exported="false" />
+        <activity
             android:name=".CompeteActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".LoginActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".MakeActivity"
             android:exported="false" />
@@ -59,8 +64,8 @@
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
-        <activity android:name="edu.northeastern.brainrush.panelactivity" />
-        <activity android:name="edu.northeastern.brainrush.learn_page" />
+        <activity android:name=".panelactivity" />
+        <activity android:name=".learn_page" />
 
         <meta-data
             android:name="preloaded_fonts"
