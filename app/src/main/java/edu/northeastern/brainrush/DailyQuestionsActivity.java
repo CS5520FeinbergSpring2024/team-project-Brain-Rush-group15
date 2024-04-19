@@ -18,6 +18,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -58,6 +59,7 @@ public class DailyQuestionsActivity extends AppCompatActivity {
         calendar.addDecorator(new CalendarDecorator(Color.BLUE, h));
         calendar.setSelectedDate(CalendarDay.today());
         calendar.state().edit()
+                .setMinimumDate(CalendarDay.from(2024, 3, 30))
                 .setMaximumDate(CalendarDay.today())
                 .commit();
 

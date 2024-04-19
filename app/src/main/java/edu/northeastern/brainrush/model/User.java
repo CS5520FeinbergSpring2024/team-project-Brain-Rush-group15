@@ -85,9 +85,7 @@ public class User implements Parcelable {
     }
 
     public int getLevel(){
-        int ret = 0;
-
-        return ret;
+        return this.experience/100 + 1;
     }
 
     public String getName() {

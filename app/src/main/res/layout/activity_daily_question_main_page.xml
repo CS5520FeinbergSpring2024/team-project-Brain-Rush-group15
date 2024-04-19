@@ -22,8 +22,8 @@
 
     <ImageView
         android:id="@+id/dailyPicture"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
+        android:layout_width="158dp"
+        android:layout_height="158dp"
         android:layout_marginTop="90dp"
         android:contentDescription="Seasonal Picture"
         app:layout_constraintEnd_toEndOf="parent"
