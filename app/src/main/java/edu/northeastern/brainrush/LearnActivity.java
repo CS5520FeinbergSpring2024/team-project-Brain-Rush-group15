@@ -11,8 +11,12 @@ import android.widget.Spinner;
 
 import java.util.Random;
 
+import edu.northeastern.brainrush.model.User;
+
 public class LearnActivity extends AppCompatActivity {
     private Button start_learn;
+
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,13 @@ public class LearnActivity extends AppCompatActivity {
     // Apply the adapter to the spinner.
         spinner.setAdapter(adapter);
 
+        //load user here
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            //Setting up the date selected from the previous page
+            user = (User) extras.get("user");
+        }
+
 
         //adding button for open new learning poge;
         start_learn = findViewById(R.id.learn_button);
@@ -41,8 +52,9 @@ public class LearnActivity extends AppCompatActivity {
                 //pass down user choice
                 String selectedCategory = spinner.getSelectedItem().toString();
                 //if == random, random subjects from that 3
+                //maybe r = r.array?
                 if(selectedCategory.equals("Random")){
-                    String[] subjects = {"History", "Biology", "Math"};
+                    String[] subjects = {"Math", "History", "Science", "Language", "Geography", "Art", "Music", "Computer"};
                     Random random = new Random();
                     int index = random.nextInt(subjects.length);
                     selectedCategory = subjects[index];
@@ -50,6 +62,7 @@ public class LearnActivity extends AppCompatActivity {
                 }
                 Intent intent = new Intent(LearnActivity.this, learn_page.class);
                 intent.putExtra("selectedCategory", selectedCategory);
+                intent.putExtra("user", user);//send user info to the next intent
 
                 startActivity(intent);
             }

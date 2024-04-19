@@ -58,6 +58,7 @@
             android:exported="false" />
         <activity android:name="edu.northeastern.brainrush.panelactivity" />
         <activity android:name="edu.northeastern.brainrush.learn_page" />
+        <activity android:name="edu.northeastern.brainrush.Paneldetailpage" />
 
         <meta-data
             android:name="preloaded_fonts"
