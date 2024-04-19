@@ -133,8 +133,10 @@ public class MakeActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(@NonNull Animator animation) {
                 animationView.setVisibility(View.GONE);
-                startActivity(new Intent(getBaseContext(), MainActivity.class));
+
+//                startActivity(new Intent(getBaseContext(), MainActivity.class));
                 Toast.makeText(getBaseContext(), "Thank you for the contribution!", Toast.LENGTH_SHORT).show();
+                finish();
             }
 
             @Override
