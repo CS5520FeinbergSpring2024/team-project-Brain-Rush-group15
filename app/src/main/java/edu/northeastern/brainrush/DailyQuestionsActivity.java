@@ -86,10 +86,10 @@ public class DailyQuestionsActivity extends AppCompatActivity {
 
     public void backToMainPage(){
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("date", dateSelected);
         intent.putExtra("user", user);
         intent.putExtra("id", id);
         startActivity(intent);
+        finish();
     }
 
     public void backButtonClick(View view){

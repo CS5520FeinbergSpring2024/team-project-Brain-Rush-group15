@@ -101,6 +101,7 @@
         android:id="@+id/submit_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="dailyQuestionSubmit"
         android:text="Submit"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="8dp"

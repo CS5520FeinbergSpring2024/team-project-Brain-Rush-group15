@@ -65,6 +65,7 @@ public class ProfileActivity extends AppCompatActivity {
     private StorageReference profilePicRef;
     private String chatGPTApiKey;
     private User user;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -86,6 +87,7 @@ public class ProfileActivity extends AppCompatActivity {
         if (extras != null) {
             //Setting up the date selected from the previous page
             user = (User) extras.get("user");
+            id = extras.getString("id");
         }
         String userName = user.getName();
         name.setText(userName);
@@ -172,6 +174,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void backButtonClick(View view){
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("user", user);
+        intent.putExtra("id", id);
         startActivity(intent);
     }
 

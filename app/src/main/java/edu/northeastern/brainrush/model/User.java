@@ -29,6 +29,8 @@ public class User implements Parcelable {
     //private time last time enter panel
     //private list of question paneled
 
+    private List<String> question_reviewed;
+
     public User() {
 
     }
@@ -44,6 +46,7 @@ public class User implements Parcelable {
         this.questions_answered = new ArrayList<>();
         this.questions_created = new ArrayList<>();
         this.daily_question_answered = new ArrayList<>();
+        this.question_reviewed = new ArrayList<>();
     }
 
     public User(String name, String id) {
@@ -71,6 +74,10 @@ public class User implements Parcelable {
         this.questions_created = questions_created;
         this.questions_answered = questions_answered;
         this.daily_question_answered = daily_question_answered;
+    }
+
+    public List<String> getQuestion_reviewed() {
+        return question_reviewed;
     }
 
     public void addExperience(int experiences){
@@ -130,6 +137,13 @@ public class User implements Parcelable {
         }
     }
 
+    public void add_question_reviewed(String id) {
+        Set<String> set = new HashSet<>(this.question_reviewed);
+        if(!set.contains(id)){
+            this.questions_created.add(id);
+        }
+    }
+
     public void add_questions_answered(String id){
         Set<String> set = new HashSet<>(questions_answered);
         if(!set.contains(id)){
@@ -172,6 +186,7 @@ public class User implements Parcelable {
         dest.writeInt(no_of_dislikes);
         dest.writeList(questions_created);
         dest.writeList(questions_answered);
+        dest.writeList(question_reviewed);
         dest.writeList(daily_question_answered);
     }
 
@@ -185,6 +200,8 @@ public class User implements Parcelable {
         date_created = tmpDateCreated == -1L ? null : new Date(tmpDateCreated);
         no_of_likes = in.readInt();
         no_of_dislikes = in.readInt();
+        question_reviewed = new ArrayList<>();
+        in.readList(question_reviewed, Long.class.getClassLoader());
         questions_created = new ArrayList<>();
         in.readList(questions_created, Long.class.getClassLoader());
         questions_answered = new ArrayList<>();
