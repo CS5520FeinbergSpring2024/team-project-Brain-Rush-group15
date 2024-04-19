@@ -24,13 +24,10 @@
             android:name=".CompeteActivity"
             android:exported="false"/>
         <activity
-            android:name=".LoginActivity"
+            android:name=".MainActivity"
             android:exported="false"/>
         <activity
             android:name=".MakeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".match.MatchingDemo"
             android:exported="false" />
         <activity
             android:name=".LearnActivity"
@@ -39,7 +36,7 @@
             android:name=".match.QuestionDemo"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

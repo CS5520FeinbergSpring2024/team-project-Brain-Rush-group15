@@ -32,7 +32,6 @@ public class QuestionDemo extends AppCompatActivity {
 
     DatabaseReference roomRef;
     DatabaseReference heartBeatRef;
-
     DatabaseReference userRef;
     DatabaseReference opponentHeartBeatRef;
     List<Question> questions;
@@ -128,7 +127,7 @@ public class QuestionDemo extends AppCompatActivity {
                     }
                 });
 
-                if(Math.abs(opponentHeartBeat - heartbeat) > 10){
+                if(Math.abs(opponentHeartBeat - heartbeat) > 7){
                     handleDisconnect();
                     timer.cancel();
                 }
