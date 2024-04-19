@@ -104,4 +104,12 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "compete clicked", Toast.LENGTH_SHORT).show();
     }
 
+//    public void openLeaderboard(View v){
+//        Intent intent = new Intent(MainActivity.this, Leaderboard.class);
+//        intent.putExtra("user", user);
+//        intent.putExtra("id", uid);
+//        startActivity(intent);
+//        Toast.makeText(this, "Leaderboard clicked", Toast.LENGTH_SHORT).show();
+//    }
+
 }

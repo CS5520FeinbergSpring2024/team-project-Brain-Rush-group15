@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import edu.northeastern.brainrush.model.Question;
 
@@ -33,12 +34,15 @@ public class MakeActivity extends AppCompatActivity {
 
     Button makeButton;
     Date currentTime;
+    String uid;
     private LottieAnimationView animationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make);
+        Intent intent = getIntent();
+        uid = intent.getStringExtra("id");
         // date created;
 
         currentTime = Calendar.getInstance().getTime();
@@ -94,11 +98,13 @@ public class MakeActivity extends AppCompatActivity {
                 choice3String = choice3EditText.getText().toString();
                 choice4String = choice4EditText.getText().toString();
                 answerSpin = answerSpinner.getSelectedItem().toString();
-                ArrayList<String> likes = new ArrayList<>();
-                ArrayList<String> dislikes = new ArrayList<>();
+                List<String> likes = new ArrayList<String>();
+//                likes.add("0");
+                List<String> dislikes = new ArrayList<String>();
+//                dislikes.add("0");
                 Question question = new Question(subjectSpin, contextString, choice1String,
                         choice2String, choice3String, choice4String, answerSpin, currentTime.toString(),
-                        "MultipleChoice", likes, dislikes, "1","5");
+                        "MultipleChoice", likes, dislikes, uid,"5");
                 mDatabase = FirebaseDatabase.getInstance().getReference();
                 mDatabase.child("Question").child(String.valueOf(currentTime) + " " + question.creatorId).setValue(question);
 
