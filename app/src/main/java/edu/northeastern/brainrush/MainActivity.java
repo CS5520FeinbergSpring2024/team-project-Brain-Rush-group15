@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
             user = new User("tester2");
         }
 
+        Log.v("user", user.getName());
+
         //Construct singleton instance for Picasso
         File httpCacheDirectory = new File(this.getCacheDir(), "picasso-cache");
         Cache cache = new Cache(httpCacheDirectory, 10 * 1024 * 1024); // 10 MiB

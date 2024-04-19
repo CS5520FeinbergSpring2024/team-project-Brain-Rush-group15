@@ -202,5 +202,6 @@ public class DailyQuestionProblemPage extends AppCompatActivity {
         intent.putExtra("user", user);
         intent.putExtra("id", id);
         startActivity(intent);
+        finish();
     }
 }
