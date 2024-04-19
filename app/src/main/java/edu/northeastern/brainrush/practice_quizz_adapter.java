@@ -10,12 +10,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import edu.northeastern.brainrush.model.Question;
+
 public class practice_quizz_adapter extends RecyclerView.Adapter<practice_quizz_ViewHolder> {
 
     private final OnCorrectAnswerListener listener;
-    private List<Question_dummy> Quizzlist;//le quizz list
+    //private List<Question_dummy> Quizzlist;//le quizz list
+    private List<Question> Quizzlist;//le quizz list
+
     private Context Context;
-    public practice_quizz_adapter(List<Question_dummy> quizzlist, Context context, OnCorrectAnswerListener listener) {
+    public practice_quizz_adapter(List<Question> quizzlist, Context context, OnCorrectAnswerListener listener) {
         this.Quizzlist = quizzlist;
         this.Context = context;
         this.listener = listener;

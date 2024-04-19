@@ -26,6 +26,9 @@ public class User implements Parcelable {
     private List<String> questions_answered;
     private List<String> daily_question_answered;
 
+    //private time last time enter panel
+    //private list of question paneled
+
     public User() {
 
     }
