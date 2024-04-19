@@ -30,9 +30,6 @@
             android:name=".MakeActivity"
             android:exported="false" />
         <activity
-            android:name=".match.MatchingDemo"
-            android:exported="false" />
-        <activity
             android:name=".LearnActivity"
             android:exported="false" />
         <activity

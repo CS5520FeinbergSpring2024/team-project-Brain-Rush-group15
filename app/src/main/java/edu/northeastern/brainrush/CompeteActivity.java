@@ -38,8 +38,9 @@ public class CompeteActivity extends AppCompatActivity {
     boolean matching;
     DatabaseReference matchRef;
     DatabaseReference questionRef;
+    DatabaseReference userRef;
     String roomId;
-    String currentId; // temporary, change to intent extra later
+    String currentId;
     String subject;
 
 
@@ -83,6 +84,24 @@ public class CompeteActivity extends AppCompatActivity {
 
         matchRef = FirebaseDatabase.getInstance().getReference().child("MatchPool");
         questionRef = FirebaseDatabase.getInstance().getReference().child("Questions");
+        userRef = FirebaseDatabase.getInstance().getReference().child("User").child(currentId);
+
+        userRef.child("Matching").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    if(snapshot.getValue() != null) {
+                        matchRef.child("Match").child(snapshot.getValue().toString()).removeValue();
+                        userRef.child("Matching").removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -94,13 +113,13 @@ public class CompeteActivity extends AppCompatActivity {
             match_button.setText("Match");
             exitClicked();
             roomId = null;
-            matching = false;
         }
     }
 
     public void matchClicked(){
         // check if have host
         matching = true;
+        matchRef.child("Host").child(currentId).removeValue();
         matchRef.child("Host").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -211,8 +230,8 @@ public class CompeteActivity extends AppCompatActivity {
                                         Log.d("TAG", "Error: " + databaseError.getMessage());
                                     }
                                 });
+                                userRef.child("Matching").setValue(roomId);
                                 matchRef.child("Host").child(key).removeValue();
-
                                 Intent intent = new Intent(CompeteActivity.this, QuestionDemo.class);
                                 intent.putExtra("roomId", roomId);
                                 intent.putExtra("role", UserRole.Host.getValue());
@@ -236,6 +255,22 @@ public class CompeteActivity extends AppCompatActivity {
             matchRef.child("Host").child(currentId).removeValue();
         }
         else {
+            userRef.child("Matching").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()){
+                        if(snapshot.getValue() != null) {
+                            matchRef.child("Match").child(snapshot.getValue().toString()).removeValue();
+                            userRef.child("Matching").removeValue();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
             matchRef.child("Match").child(roomId).removeValue();
             roomId = null;
         }
