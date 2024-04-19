@@ -106,7 +106,7 @@ public class MakeActivity extends AppCompatActivity {
                         choice2String, choice3String, choice4String, answerSpin, currentTime.toString(),
                         "MultipleChoice", likes, dislikes, uid,"5");
                 mDatabase = FirebaseDatabase.getInstance().getReference();
-                mDatabase.child("Question").child(String.valueOf(currentTime) + " " + question.creatorId).setValue(question);
+                mDatabase.child("PendingQuestion").child(String.valueOf(currentTime) + " " + question.creatorId).setValue(question);
 
                 // play the animation after the user make the question
                 checkAnimation();
