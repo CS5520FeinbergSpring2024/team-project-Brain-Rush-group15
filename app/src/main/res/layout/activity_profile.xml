@@ -25,12 +25,12 @@
         android:src="@drawable/ic_launcher_background" />
 
     <TextView
-        android:padding="10dp"
         android:id="@+id/profile_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
+        android:padding="10dp"
         android:text="Name"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 

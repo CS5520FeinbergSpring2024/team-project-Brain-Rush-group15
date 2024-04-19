@@ -93,7 +93,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
         String userName = user.getName();
         name.setText(userName);
-        level.setText("level: " + user.getExperience());
+        level.setText("Level: " + user.getLevel());
         score.setText("Score: " + user.getScore());
 
 

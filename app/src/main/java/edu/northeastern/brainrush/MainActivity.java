@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
     private Picasso picasso;
+    private TextView score, level;
     private User user;
     private String uid;
 
@@ -27,17 +29,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Define the text view
+        score = findViewById(R.id.score);
+        level = findViewById(R.id.level);
+
         //Set the user
+        uid = "test2";
+        user = new User("tester2");
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             //Setting up the date selected from the previous page
             uid = extras.getString("id");
             user = (User) extras.get("user");
         }
-        else{
-            uid = "test2";
-            user = new User("tester2");
-        }
+
+        score.setText("Score: " + user.getScore());
+        level.setText("Level: " + user.getLevel());
+
 
         Log.v("user", user.getName());
 
