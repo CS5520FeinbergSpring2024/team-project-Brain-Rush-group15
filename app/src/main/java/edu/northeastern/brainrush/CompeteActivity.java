@@ -119,6 +119,7 @@ public class CompeteActivity extends AppCompatActivity {
     public void matchClicked(){
         // check if have host
         matching = true;
+        matchRef.child("Host").child(currentId).removeValue();
         matchRef.child("Host").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
