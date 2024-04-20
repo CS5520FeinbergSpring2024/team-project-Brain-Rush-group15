@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class User implements Parcelable {
     private final String defaultUrl = "gs://brain-rush-db21a.appspot.com/profilePictures/default_user.jpeg";
-    private long id;
+    private String id;
     private String name;
     private String picture;
     private int experience;
@@ -29,11 +29,28 @@ public class User implements Parcelable {
     //private time last time enter panel
     //private list of question paneled
 
+    private List<String> question_reviewed;
+
     public User() {
 
     }
 
     public User(String name) {
+        this.name = name;
+        this.picture = defaultUrl;
+        this.experience = 0;
+        this.score = 0;
+        this.date_created = new Date();
+        this.no_of_dislikes = 0;
+        this.no_of_likes = 0;
+        this.questions_answered = new ArrayList<>();
+        this.questions_created = new ArrayList<>();
+        this.daily_question_answered = new ArrayList<>();
+        this.question_reviewed = new ArrayList<>();
+    }
+
+    public User(String name, String id) {
+        this.id = id;
         this.name = name;
         this.picture = defaultUrl;
         this.experience = 0;
@@ -59,14 +76,16 @@ public class User implements Parcelable {
         this.daily_question_answered = daily_question_answered;
     }
 
+    public List<String> getQuestion_reviewed() {
+        return question_reviewed;
+    }
+
     public void addExperience(int experiences){
         this.experience += experiences;
     }
 
     public int getLevel(){
-        int ret = 0;
-
-        return ret;
+        return this.experience/100 + 1;
     }
 
     public String getName() {
@@ -116,6 +135,13 @@ public class User implements Parcelable {
         }
     }
 
+    public void add_question_reviewed(String id) {
+        Set<String> set = new HashSet<>(this.question_reviewed);
+        if(!set.contains(id)){
+            this.questions_created.add(id);
+        }
+    }
+
     public void add_questions_answered(String id){
         Set<String> set = new HashSet<>(questions_answered);
         if(!set.contains(id)){
@@ -148,7 +174,7 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
+        dest.writeString(id);
         dest.writeString(name);
         dest.writeString(picture != null ? picture : defaultUrl);
         dest.writeInt(experience);
@@ -158,11 +184,12 @@ public class User implements Parcelable {
         dest.writeInt(no_of_dislikes);
         dest.writeList(questions_created);
         dest.writeList(questions_answered);
+        dest.writeList(question_reviewed);
         dest.writeList(daily_question_answered);
     }
 
     protected User(Parcel in) {
-        id = in.readLong();
+        id = in.readString();
         name = in.readString();
         picture = in.readString();
         experience = in.readInt();
@@ -171,6 +198,8 @@ public class User implements Parcelable {
         date_created = tmpDateCreated == -1L ? null : new Date(tmpDateCreated);
         no_of_likes = in.readInt();
         no_of_dislikes = in.readInt();
+        question_reviewed = new ArrayList<>();
+        in.readList(question_reviewed, Long.class.getClassLoader());
         questions_created = new ArrayList<>();
         in.readList(questions_created, Long.class.getClassLoader());
         questions_answered = new ArrayList<>();

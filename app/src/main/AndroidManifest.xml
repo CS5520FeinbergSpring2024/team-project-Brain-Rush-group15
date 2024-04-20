@@ -21,16 +21,13 @@
         android:theme="@style/Theme.BrainRush"
         tools:targetApi="31">
         <activity
+            android:name=".CompeteActivity"
+            android:exported="false"/>
+        <activity
             android:name=".MainActivity"
             android:exported="false"/>
         <activity
-            android:name=".match.MatchingDemo"
-            android:exported="false"/>
-        <activity
             android:name=".MakeActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CompeteActivity"
             android:exported="false" />
         <activity
             android:name=".LearnActivity"
@@ -49,6 +46,9 @@
         </activity>
         <activity
             android:name=".DailyQuestionsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SignupActivity"
             android:exported="false" />
         <activity
             android:name=".DailyQuestionProblemPage"

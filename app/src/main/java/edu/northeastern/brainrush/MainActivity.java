@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,19 +20,34 @@ import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
     private Picasso picasso;
+    private TextView score, level;
     private User user;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Define the text view
+        score = findViewById(R.id.score);
+        level = findViewById(R.id.level);
+
         //Set the user
+        uid = "test2";
+        user = new User("tester2");
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             //Setting up the date selected from the previous page
+            uid = extras.getString("id");
             user = (User) extras.get("user");
         }
+
+        score.setText("Score: " + user.getScore());
+        level.setText("Level: " + user.getLevel());
+
+
+        Log.v("user", user.getName());
 
         //Construct singleton instance for Picasso
         File httpCacheDirectory = new File(this.getCacheDir(), "picasso-cache");
@@ -53,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     public void openUserFile(View v){
         Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
         intent.putExtra("user", user);
+        intent.putExtra("id", uid);
         startActivity(intent);
         Toast.makeText(this, "user file clicked", Toast.LENGTH_SHORT).show();
     }
@@ -60,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     public void openMail(View v){
         Intent intent = new Intent(MainActivity.this, panelactivity.class);
         intent.putExtra("user", user);
+        intent.putExtra("id", uid);
         startActivity(intent);
         Toast.makeText(this, "mail clicked", Toast.LENGTH_SHORT).show();
     }
@@ -67,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     public void openDashboard(View v){
         Intent intent = new Intent(MainActivity.this, DailyQuestionsActivity.class);
         intent.putExtra("user", user);
+        intent.putExtra("id", uid);
         startActivity(intent);
         Toast.makeText(this, "dashboard clicked", Toast.LENGTH_SHORT).show();
     }
@@ -74,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
     public void openLearn(View v){
         Intent intent = new Intent(MainActivity.this, LearnActivity.class);
         intent.putExtra("user", user);
+        intent.putExtra("id", uid);
         startActivity(intent);
         Toast.makeText(this, "learn clicked", Toast.LENGTH_SHORT).show();
     }
@@ -81,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     public void openMake(View v){
         Intent intent = new Intent(MainActivity.this, MakeActivity.class);
         intent.putExtra("user", user);
+        intent.putExtra("id", uid);
         startActivity(intent);
         Toast.makeText(this, "make clicked", Toast.LENGTH_SHORT).show();
     }
@@ -88,8 +109,17 @@ public class MainActivity extends AppCompatActivity {
     public void openCompete(View v){
         Intent intent = new Intent(MainActivity.this, CompeteActivity.class);
         intent.putExtra("user", user);
+        intent.putExtra("id", uid);
         startActivity(intent);
         Toast.makeText(this, "compete clicked", Toast.LENGTH_SHORT).show();
     }
+
+//    public void openLeaderboard(View v){
+//        Intent intent = new Intent(MainActivity.this, Leaderboard.class);
+//        intent.putExtra("user", user);
+//        intent.putExtra("id", uid);
+//        startActivity(intent);
+//        Toast.makeText(this, "Leaderboard clicked", Toast.LENGTH_SHORT).show();
+//    }
 
 }

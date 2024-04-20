@@ -101,10 +101,10 @@
         android:id="@+id/submit_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="dailyQuestionSubmit"
         android:text="Submit"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="8dp"
-        android:onClick="dailyQuestionSubmit"
         android:background="@android:color/holo_blue_dark"
         android:textColor="#FFF"/>
 

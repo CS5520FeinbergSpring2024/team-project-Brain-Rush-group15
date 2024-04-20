@@ -42,8 +42,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import edu.northeastern.brainrush.model.User;
 import edu.northeastern.brainrush.BuildConfig;
@@ -65,6 +68,7 @@ public class ProfileActivity extends AppCompatActivity {
     private StorageReference profilePicRef;
     private String chatGPTApiKey;
     private User user;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -73,7 +77,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         //Gettting the Api key
         chatGPTApiKey = BuildConfig.ChatGPT_API_KEY;
-        Log.v("key", chatGPTApiKey);
 
         profilePicture = findViewById(R.id.profile_image);
         name = findViewById(R.id.profile_name);
@@ -86,10 +89,11 @@ public class ProfileActivity extends AppCompatActivity {
         if (extras != null) {
             //Setting up the date selected from the previous page
             user = (User) extras.get("user");
+            id = extras.getString("id");
         }
         String userName = user.getName();
         name.setText(userName);
-        level.setText("level: " + user.getExperience());
+        level.setText("Level: " + user.getLevel());
         score.setText("Score: " + user.getScore());
 
 
@@ -116,7 +120,16 @@ public class ProfileActivity extends AppCompatActivity {
             JSONObject message = new JSONObject();
             message.put("role", "user");
             JSONArray content = new JSONArray();
-            content.put(new JSONObject().put("type", "text").put("text", "generate a random motto?"));
+            List<String> nameArray = new ArrayList<>();
+            nameArray.add("Plato");
+            nameArray.add("Immanuel Kant");
+            nameArray.add("Friedrich Nietzsche");
+            nameArray.add("Confucius");
+            nameArray.add("Simone de Beauvoir");
+            nameArray.add("John Stuart Mill");
+            Random rand = new Random();
+            String philosopher = nameArray.get(rand.nextInt(6));
+            content.put(new JSONObject().put("type", "text").put("text", "generate a random motto of" + philosopher));
             message.put("content", content);
             messages.put(message);
             jsonBody.put("messages", messages);
@@ -167,12 +180,10 @@ public class ProfileActivity extends AppCompatActivity {
         // Add the request to the RequestQueue
         requestQueue.add(jsonObjectRequest);
         Log.v("result", String.valueOf(jsonObjectRequest));
-
     }
 
     public void backButtonClick(View view){
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        finish();
     }
 
     private void checkPermissionAndTakePhoto() {

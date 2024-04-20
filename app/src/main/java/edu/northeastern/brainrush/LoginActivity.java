@@ -10,45 +10,82 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import edu.northeastern.brainrush.model.TestUser;
 import edu.northeastern.brainrush.model.User;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText userName;
+    private EditText emailAddress;
+    private EditText passWord;
 
-    DatabaseReference myRef;
-    private User user = new User("1");
+    private DatabaseReference myRef;
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         myRef = FirebaseDatabase.getInstance().getReference().child("User");
-        userName = findViewById(R.id.username);
+        mAuth = FirebaseAuth.getInstance();
+        emailAddress = findViewById(R.id.emailAddress);
+        passWord = findViewById(R.id.password);
+    }
+
+    public void signupClicked(View view){
+        startActivity(new Intent(this, SignupActivity.class));
     }
 
     public void loginClicked(View v){
-        String name = userName.getText().toString();
-        myRef.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
+        String email = emailAddress.getText().toString().trim();
+        String password = passWord.getText().toString();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(LoginActivity.this, "Email/password cannot be empty.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Login success, navigate to main activity
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            if (user.isEmailVerified()) {
+                                // Email is verified, proceed to the next activity
+                                fetchUserData(user.getUid());
+                                finish();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Please verify your email address.", Toast.LENGTH_LONG).show();
+                                mAuth.signOut(); // Optional: sign out the user until they verify their email
+                            }
+                        }
+                    } else {
+                        // Error handling
+                        Toast.makeText(this, "Sign in failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private void fetchUserData(String id) {
+        myRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    user = dataSnapshot.getValue(user.getClass());
+                    User user = dataSnapshot.getValue(User.class);
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("user", user);
+                    intent.putExtra("id", id);
                     startActivity(intent);
                 } else {
-                    register(name);
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("user", user);
-                    startActivity(intent);
+                    Toast.makeText(LoginActivity.this, "User does not exits.", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -57,18 +94,5 @@ public class LoginActivity extends AppCompatActivity {
                 System.err.println("Database error: " + databaseError.getMessage());
             }
         });
-    }
-
-    private void register(String userName){
-        user = new User(userName);
-        myRef.child(userName).setValue(user)
-                .addOnSuccessListener(s -> {
-                    // Handle success
-                    Log.d("AddNewUser", "User added successfully");
-                })
-                .addOnFailureListener(e -> {
-                    // Handle failure
-                    Log.w("AddNewUser", "Error adding user", e);
-                });
     }
 }

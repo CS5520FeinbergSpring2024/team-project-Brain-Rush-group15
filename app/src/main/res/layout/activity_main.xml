@@ -92,7 +92,7 @@
             android:layout_row="0"
             android:layout_column="2"
             android:layout_gravity="center"
-            android:src="@drawable/light_bulb_100" />
+            android:src="@drawable/light_bulb_color" />
 
         <ImageView
             android:id="@+id/title_bulb"
@@ -139,7 +139,7 @@
             android:layout_row="0"
             android:layout_column="0"
             android:layout_gravity="center"
-            android:src="@drawable/graduation_hat_60" />
+            android:background="@drawable/graduation_hat_color" />
 
         <TextView
             android:id="@+id/level"
@@ -154,11 +154,11 @@
         <ImageView
             android:id="@+id/score_img"
             android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_height="43dp"
             android:layout_row="1"
             android:layout_column="0"
             android:layout_gravity="center"
-            android:src="@drawable/trophy_64" />
+            android:background="@drawable/trophy_color" />
 
         <TextView
             android:id="@+id/score"
@@ -177,8 +177,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="28dp"
-        android:background="@drawable/user_button"
-        android:src="@drawable/user_icon"
+        android:background="@drawable/user_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.955"
         app:layout_constraintStart_toStartOf="parent"
@@ -191,7 +190,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginEnd="20dp"
-        android:src="@drawable/mail_48"
+        android:background="@drawable/mail_color"
         app:layout_constraintBottom_toTopOf="@+id/guideline_h3"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toTopOf="@+id/guideline_h2"
@@ -204,7 +203,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="20dp"
         android:scaleType="fitXY"
-        android:src="@drawable/histogram_80"
+        android:background="@drawable/calendar_color"
         app:layout_constraintBottom_toTopOf="@+id/guideline_h3"
         app:layout_constraintStart_toStartOf="@+id/guideline4"
         app:layout_constraintTop_toTopOf="@+id/guideline_h2"
@@ -244,5 +243,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline_h4"
         android:onClick="openCompete"/>
+
+<!--    <Button-->
+<!--        android:id="@+id/button"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:onClick="openLeaderboard"-->
+<!--        android:text="Leaderboard"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/compete" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
