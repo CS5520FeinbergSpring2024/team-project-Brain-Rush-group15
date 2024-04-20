@@ -21,7 +21,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import java.util.List;
+
 
 import edu.northeastern.brainrush.model.Question;
 
@@ -98,10 +103,16 @@ public class MakeActivity extends AppCompatActivity {
                 choice3String = choice3EditText.getText().toString();
                 choice4String = choice4EditText.getText().toString();
                 answerSpin = answerSpinner.getSelectedItem().toString();
-                List<String> likes = new ArrayList<String>();
+
+                //ArrayList<String> likes = new ArrayList<>();
+                Map<String, Boolean>likes = new HashMap<>();
+                ArrayList<String> dislikes = new ArrayList<>();
+
+ //               List<String> likes = new ArrayList<String>();
 //                likes.add("0");
-                List<String> dislikes = new ArrayList<String>();
+  //              List<String> dislikes = new ArrayList<String>();
 //                dislikes.add("0");
+
                 Question question = new Question(subjectSpin, contextString, choice1String,
                         choice2String, choice3String, choice4String, answerSpin, currentTime.toString(),
                         "MultipleChoice", likes, dislikes, uid,"5");

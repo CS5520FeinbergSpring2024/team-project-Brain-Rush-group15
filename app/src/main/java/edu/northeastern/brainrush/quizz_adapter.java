@@ -12,7 +12,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import edu.northeastern.brainrush.model.Question;
 
@@ -77,7 +80,7 @@ public class quizz_adapter extends RecyclerView.Adapter<quizz_adapter.quizz_View
             quizz_titleTV = itemsView.findViewById(R.id.quizz_title);
             quizz_likenessTV = itemsView.findViewById(R.id.quizz_likes);
 
-            quizz_titleTV.setOnClickListener(view -> {
+            itemsView.setOnClickListener(view -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
                     Question question = Quizzlist.get(position);
@@ -114,9 +117,23 @@ public class quizz_adapter extends RecyclerView.Adapter<quizz_adapter.quizz_View
 //            });
         }
 
+        public void setLimitedWordsText(TextView textView, String text, int maxWords) {
+            String[] words = text.split("\\s+"); // Split by whitespace
+            maxWords = Math.min(words.length, maxWords); // Ensure not to exceed the number of available words
+
+            String resultraw = Arrays.stream(words, 0, maxWords).collect(Collectors.joining(" "));
+            String result = resultraw + "...";
+            textView.setText(result);
+        }
+
+
+
         public void bindtheData(Question quizzOnarrival) {
-            quizz_titleTV.setText(quizzOnarrival.context); // Assuming there is a getText method.
-            quizz_likenessTV.setText(Integer.toString(0)); // Assuming there is a getLikes method returning an int.
+            setLimitedWordsText(quizz_titleTV, quizzOnarrival.context, 5);
+            int likers = 0;
+            if(quizzOnarrival.likes!=null){
+            likers = quizzOnarrival.likes.size();}
+            quizz_likenessTV.setText("Like: " + Integer.toString(likers)); // Assuming there is a getLikes method returning an int.
         }
     }
 }

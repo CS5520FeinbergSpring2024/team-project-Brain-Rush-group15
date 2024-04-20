@@ -124,7 +124,7 @@ public class panelactivity extends AppCompatActivity {
     }
 
     private void fetchUnreviewedRandomQuestions(Set<String> reviewedIds) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Question");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("PendingQuestion");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -150,7 +150,7 @@ public class panelactivity extends AppCompatActivity {
         quizzlist.clear();
 
         for (int i = 0; i < count; i++) {
-            DatabaseReference questionRef = FirebaseDatabase.getInstance().getReference("Question").child(unreviewedKeys.get(i));
+            DatabaseReference questionRef = FirebaseDatabase.getInstance().getReference("PendingQuestion").child(unreviewedKeys.get(i));
             questionRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -182,7 +182,7 @@ public class panelactivity extends AppCompatActivity {
         quizzlist.clear();
 
         for (int i = 0; i < count; i++) {
-            DatabaseReference questionRef = FirebaseDatabase.getInstance().getReference("Question").child(keys.get(i));
+            DatabaseReference questionRef = FirebaseDatabase.getInstance().getReference("PendingQuestion").child(keys.get(i));
             questionRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
