@@ -5,6 +5,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 @IgnoreExtraProperties
 public class Question {
@@ -18,7 +19,8 @@ public class Question {
     public String correctAnswer;
     public String dateCreated;
     public String type;
-    public ArrayList<String> likes;
+    //public ArrayList<String> likes;
+    public Map<String, Boolean> likes;
     public ArrayList<String> dislikes;
     public String creatorId;
     public String expValue;
@@ -30,7 +32,7 @@ public class Question {
     }
     public Question(String subject, String context, String choice1, String choice2, String choice3,
                     String choice4, String correctAnswer, String dateCreated,
-                    String type, ArrayList<String> likes, ArrayList<String> dislikes,
+                    String type, Map<String, Boolean> likes, ArrayList<String> dislikes,
                     String creatorId, String expValue){
         this.subject = subject;
         this.context = context;

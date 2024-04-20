@@ -30,7 +30,7 @@ import java.util.Map;
 public class Paneldetailpage extends AppCompatActivity {
     private Question question;
     private String userid;
-    private TextView QSubjectTV, QbodyTV, C1TV, C2TV, C3TV, C4TV;
+    private TextView QSubjectTV, QbodyTV, C1TV, C2TV, C3TV, C4TV, CA;
     private Button likeButton, noLikeButton;
 
     @Override
@@ -66,6 +66,7 @@ public class Paneldetailpage extends AppCompatActivity {
         C2TV = findViewById(R.id.Choice2);
         C3TV = findViewById(R.id.Choice3);
         C4TV = findViewById(R.id.Choice4);
+        CA = findViewById(R.id.CorrectAnswer);
         likeButton = findViewById(R.id.Like);
         noLikeButton = findViewById(R.id.Nolike);
     }
@@ -73,7 +74,7 @@ public class Paneldetailpage extends AppCompatActivity {
     private void setupButtons() {
         likeButton.setOnClickListener(v -> {
             if (question != null) {
-                setResultAndFinish(question.id, true);
+                setResultAndFinish(question.id, true, userid);
                 updatereviews(userid, question.id);//code regard of like
             } else {
                 Toast.makeText(this, "Question data not loaded yet.", Toast.LENGTH_SHORT).show();
@@ -82,7 +83,7 @@ public class Paneldetailpage extends AppCompatActivity {
 
         noLikeButton.setOnClickListener(v -> {
             if (question != null) {
-                setResultAndFinish(question.id, false);
+                setResultAndFinish(question.id, false, userid);
                 updatereviews(userid, question.id);//code regard of like
 
             } else {
@@ -106,7 +107,7 @@ public class Paneldetailpage extends AppCompatActivity {
     }
 
     private void fetchQuestionDetails(String questionId) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Question").child(questionId);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("PendingQuestion").child(questionId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -130,21 +131,122 @@ public class Paneldetailpage extends AppCompatActivity {
 
     private void updateUI() {
         if (question != null) {
-            QSubjectTV.setText(question.subject);
-            QbodyTV.setText(question.context);
-            C1TV.setText(question.choice1);
-            C2TV.setText(question.choice2);
-            C3TV.setText(question.choice3);
-            C4TV.setText(question.choice4);
+            QSubjectTV.setText("Subject: "+ question.subject);
+            QbodyTV.setText("Question body: " + question.context);
+            C1TV.setText("1. " + question.choice1);
+            C2TV.setText("2. " + question.choice2);
+            C3TV.setText("3. " + question.choice3);
+            C4TV.setText("4. " + question.choice4);
+            CA.setText("Correct answer: " + question.correctAnswer);
         }
     }
 
-    private void setResultAndFinish(String questionId, boolean liked) {
+    private void setResultAndFinish(String questionId, boolean liked, String uid) {
+        //put them out of pending if likes >=2
+        if (liked) {
+            DatabaseReference likesRef = FirebaseDatabase.getInstance().getReference("PendingQuestion")
+                    .child(questionId)
+                    .child("likes");
+
+            // Set the user's like as true at the specific uid node
+            likesRef.child(uid).setValue(true).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Log.d("UpdateLikes", "User " + uid + " liked question " + questionId);
+
+                    // Check all likes after updating
+                    likesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            long count = dataSnapshot.getChildrenCount();
+                            if (count > 1) {  // More than one like
+                                DatabaseReference pendingQuestionRef = FirebaseDatabase.getInstance().getReference("PendingQuestion").child(questionId);
+                                DatabaseReference officialQuestionsRef = FirebaseDatabase.getInstance().getReference("Question");
+                                moveQuestionToOfficial(pendingQuestionRef, officialQuestionsRef, questionId);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.e("Firebase", "Error checking likes", databaseError.toException());
+                        }
+                    });
+                } else {
+                    Log.e("UpdateLikes", "Failed to like question: " + task.getException().getMessage());
+                }
+            });
+        }
+//        if (liked) {
+//            DatabaseReference likesRef = FirebaseDatabase.getInstance().getReference("PendingQuestion")
+//                    .child(questionId)
+//                    .child("likes");
+//
+//            // Set the user's like as true at the specific uid node
+//// Add the user ID to the likes list
+//            likesRef.push().setValue(uid).addOnCompleteListener(task -> {
+//                if (task.isSuccessful()) {
+//                    Log.d("UpdateLikes", "User " + uid + " liked question " + questionId);
+//
+//                    // Check all likes after updating
+//                    likesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            long count = dataSnapshot.getChildrenCount();
+//                            if (count > 1) {  // More than one like
+//                                DatabaseReference pendingQuestionRef = FirebaseDatabase.getInstance().getReference("PendingQuestion").child(questionId);
+//                                DatabaseReference officialQuestionsRef = FirebaseDatabase.getInstance().getReference("Question");
+//                                moveQuestionToOfficial(pendingQuestionRef, officialQuestionsRef, questionId);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//                            Log.e("Firebase", "Error checking likes", databaseError.toException());
+//                        }
+//                    });
+//                } else {
+//                    Log.e("UpdateLikes", "Failed to like question: " + task.getException().getMessage());
+//                }
+//            });
+//        }
+
+
+
         Intent data = new Intent();
         data.putExtra("questionId", questionId);
         data.putExtra("liked", liked);
         setResult(RESULT_OK, data);
         finish();
+    }
+
+
+    private void moveQuestionToOfficial(DatabaseReference fromRef, DatabaseReference toRef, String questionId) {
+        fromRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Take the whole question object
+                Object question = dataSnapshot.getValue();
+                // Set the question object to the new location
+                toRef.child(questionId).setValue(question).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Remove from pending questions once successfully added to official questions
+                        fromRef.removeValue().addOnCompleteListener(removeTask -> {
+                            if (removeTask.isSuccessful()) {
+                                Log.d("Firebase", "Question moved to official and removed from pending successfully.");
+                            } else {
+                                Log.e("Firebase", "Failed to remove question from pending: " + removeTask.getException().getMessage());
+                            }
+                        });
+                    } else {
+                        Log.e("Firebase", "Failed to move question to official: " + task.getException().getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("Firebase", "Error moving question to official", databaseError.toException());
+            }
+        });
     }
 }
 

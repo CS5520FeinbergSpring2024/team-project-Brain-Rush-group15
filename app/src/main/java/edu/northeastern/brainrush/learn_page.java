@@ -1,5 +1,6 @@
 package edu.northeastern.brainrush;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,13 +23,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import edu.northeastern.brainrush.model.Question;
 import edu.northeastern.brainrush.model.User;
 
-public class learn_page extends AppCompatActivity implements OnCorrectAnswerListener {//animation related code
-
+public class learn_page extends AppCompatActivity implements OnItemClickListener {//animation related code
+    private static final int REQUEST_CODE_REMOVE_QUESTION = 1;
     RecyclerView practice_view;//
 
     private User user;
@@ -48,21 +51,6 @@ public class learn_page extends AppCompatActivity implements OnCorrectAnswerList
         String selectedCategory = intent.getStringExtra("selectedCategory");
         user = intent.getParcelableExtra("user");
 
-//        Bundle extras = getIntent().getExtras();
-//        if (extras != null) {
-//            String selectedCategory = extras.getString("subjects");
-//            //Setting up the date selected from the previous page
-//            user = (User) extras.get("user");
-//        }
-//        else{
-//            Log.d("NoExtraexception", "Didn't received extras!");
-//
-//        }
-
-
-//        Intent intent = getIntent();
-//        String selectedCategory = intent.getStringExtra("selectedCategory");
-//        user = intent.getParcelableExtra("user");
 
         questionList = new ArrayList<>();//value holder for the data fetched from the query, now not gonna use
         questionList2 = new ArrayList<>();//value holder for the data fetched from the query
@@ -71,37 +59,22 @@ public class learn_page extends AppCompatActivity implements OnCorrectAnswerList
         practice_view.setHasFixedSize(true);
         practice_view.setLayoutManager(new LinearLayoutManager(this));
 
-        // Initialize the adapter
-        final practice_quizz_adapter adapter = new practice_quizz_adapter(questionList2, this, this);//animation related code
-
+        // ----------------------------------------Initialize the adapter---------------------------------------------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        final practice_quizz_adapter adapter = new practice_quizz_adapter(questionList2, this, user.getName(), this);
+        adapter.setAdapterDataObserver(new practice_quizz_adapter.AdapterDataObserver() {
+            @Override
+            public void onListEmpty() {
+                showCompletionDialog();
+            }
+        });
         //the database query step, looking for questions
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-        //DatabaseReference questionsRef = databaseRef.child("Questions");//questions --> Questions
 
         DatabaseReference questionsRef = databaseRef.child("Question");//questions --> Questions
 
-        //String desiredSubject = selectedCategory; // The subject that is wanted by the user
-        //Query query = questionsRef.orderByChild("subjects").equalTo(selectedCategory);
 
-        Query query = questionsRef.orderByChild("subject").equalTo(selectedCategory);//subjects --> subject
-        //------------------------- add condition here,only like >=2 will be added-----------------------------------
-//        query.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                    Question question = snapshot.getValue(Question.class);
-//                    if (question != null && question.getLike() >= 2) {
-//                        // Add to your list or handle the question object as needed
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.d("Questionload", "The read failed: " + databaseError.getCode());
-//            }
+        Query query = questionsRef.orderByChild("subject").equalTo(selectedCategory).limitToFirst(5); ;//subjects --> subject
 
-        //------------------------------process is competed above ----------------------------------------------------
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -131,58 +104,50 @@ public class learn_page extends AppCompatActivity implements OnCorrectAnswerList
         });
     }
 
-    @Override
-    public void onCorrectAnswerSelected() {//animation related code
-        Log.e("Question", "Current User expo, before answer"+ user.getExperience());
 
-        user.addExperience(5);
-        Log.e("Question", "Current User expo, afyer answer"+ user.getExperience());
-        //time for database
-        String path = "User/"+user.getName()+"/experience";
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference userRef = database.getReference(path);
-        userRef.setValue(user.getExperience());
-
-
-        ImageView animationView = findViewById(R.id.animation_view);
-        animationView.setVisibility(View.VISIBLE); // Make the ImageView visible
-        AnimationDrawable animation = (AnimationDrawable) animationView.getBackground();
-        animation.start(); // Start the animation
-        int totalDuration = 0;
-        for (int i = 0; i < animation.getNumberOfFrames(); i++) {
-            totalDuration += animation.getDuration(i);
+    private void removeQuestionFromList(String questionId) {
+        Iterator<Question> iterator = questionList2.iterator();
+        while (iterator.hasNext()) {
+            Question question = iterator.next();
+            if (question.id.equals(questionId)) {
+                iterator.remove();
+                practice_view.getAdapter().notifyDataSetChanged();
+                break;
+            }
         }
+        practice_view.getAdapter().notifyDataSetChanged();
 
-        new Handler().postDelayed(() -> {
-            animationView.setVisibility(View.INVISIBLE);
-        }, totalDuration);
+    }
+
+    @Override
+    public void onItemClick(String questionId, String userId) {
+        Intent intent = new Intent(this, PracticeDetailAct.class);
+        intent.putExtra("questionId", questionId);
+        intent.putExtra("userid", userId);
+        startActivityForResult(intent, REQUEST_CODE_REMOVE_QUESTION);
+    }
+
+    private void showCompletionDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Congratulations!")
+                .setMessage("You have finished all the questions.")
+                .setPositiveButton("Exit", (dialog, which) -> finish())
+                .show();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_REMOVE_QUESTION && resultCode == RESULT_OK) {
+            String removedQuestionId = data.getStringExtra("removedQuestionId");
+            removeQuestionFromList(removedQuestionId);
+            if (questionList2.isEmpty()) {
+                showCompletionDialog();
+            }
+        }
     }
 }
 
-//        quizzlist = new ArrayList<>();
-//
-//        int dummylikeness = 5;
-//        List<String> sampleTitle = new ArrayList<>();
-//        sampleTitle.add("Biology");
-//        sampleTitle.add("zig zig");
-//        sampleTitle.add("mophrism");
-//        sampleTitle.add("Nlists");
-//        sampleTitle.add("Meme");
-//
-//        for(String titles: sampleTitle){
-//            quizzlist.add(new Quizz(titles, dummylikeness++));
-//        }
-        //this should set up the basic list for quizz
 
-
-
-
-
-//        practice_view = findViewById(R.id.practice_list);
-//
-//        practice_view.setHasFixedSize(true);
-//
-//        practice_view.setLayoutManager(new LinearLayoutManager(this));
-//
-//        practice_view.setAdapter(new practice_quizz_adapter(questionList, this));
 
