@@ -27,6 +27,7 @@ import edu.northeastern.brainrush.model.User;
 public class PracticeDetailAct extends AppCompatActivity {
     private Question quizz;//le quizz
 
+    private String uid;
     private User user;//le user
 
 
@@ -59,13 +60,20 @@ public class PracticeDetailAct extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        String uid = intent.getStringExtra("userid");
+        uid = intent.getStringExtra("userid");
+        Log.d("read_intent", "Userid is " + uid);
+
         String qid = intent.getStringExtra("questionId");
+        Log.d("read_intent", "Questionname is " + qid);
+
+        //user = intent.getParcelableExtra("user");
+
 
         DatabaseReference database = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference questionRef = database.child("Question").child(qid); // 'questionId' should be the specific ID of the question
+        DatabaseReference questionRef = database.child("Question").child(qid);
         DatabaseReference database2 = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference Useref = database2.child("User").child(uid); // 'questionId' should be the specific ID of the question
+        Log.d("Useref_before_connection", "uid is " + uid);
+        DatabaseReference Useref = database2.child("User").child(uid);
         questionRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -73,6 +81,9 @@ public class PracticeDetailAct extends AppCompatActivity {
                 Log.d("FirebaseQuestion", "now fetching questions");
                 if (quizz != null) {
                     Log.d("FirebaseQuestion", " fetching questions succeed!");
+                    Log.d("FirebaseQuestion", " fetchied questionid is: " + quizz.id);
+                    Log.d("FirebaseQuestion", " fetchied q correctAnswer is: " + quizz.correctAnswer);
+
 
                     updateUIWithQuestionData(); // Update all question related UI elements here
                 }
@@ -93,7 +104,16 @@ public class PracticeDetailAct extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
                 if (user != null) {
+                    Log.d("Firebase_User", "Thanks god, user loaded");
+                    Log.d("Firebase_User", "And user name is " + user.getName());
+                    Log.d("Firebase_User", "And user id is " + user.getDate_created());
+
+
                     updateUIWithUserData(); // Update all user related UI elements here
+                }
+                else{
+                    Log.e("Firebase_User", "WTF user not loading");
+
                 }
             }
 
@@ -206,12 +226,18 @@ public class PracticeDetailAct extends AppCompatActivity {
     }
 
     public void onCorrectAnswerSelected() {//animation related code
-        Log.e("Question", "Current User expo, before answer" + user.getExperience());
+        if (user == null) {
+            Log.e("PracticeDetailAct", "Attempt to use null User object.");
+            return;  // Stop further execution if user is null
+        }
+        Log.d("Question", "Current User expo, before answer " + user.getExperience());
 
         user.addExperience(5);
-        Log.e("Question", "Current User expo, afyer answer" + user.getExperience());
+        Log.d("Question", "Current User expo, afyer answer " + user.getExperience());
         //time for database
-        String path = "User/" + user.getName() + "/experience";
+        String path = "User/" + uid + "/experience";
+        Log.d("Userpath", "Current User path is" + path);
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference userRef = database.getReference(path);
         userRef.setValue(user.getExperience());

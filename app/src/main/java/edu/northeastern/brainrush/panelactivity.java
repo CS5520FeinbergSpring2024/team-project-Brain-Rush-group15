@@ -43,7 +43,7 @@ public class panelactivity extends AppCompatActivity {
         setContentView(R.layout.activity_panel);
         Intent intent = getIntent();
         User user = intent.getParcelableExtra("user");
-        uid = user.getName();
+        uid = intent.getStringExtra("id");
         quizzview = findViewById(R.id.quizzlist);
         quizzlist = new ArrayList<>();
         adapter = new quizz_adapter
