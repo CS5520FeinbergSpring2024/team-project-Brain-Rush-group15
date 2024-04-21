@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -104,6 +106,33 @@ public class learn_page extends AppCompatActivity implements OnItemClickListener
                 Log.e("Question", "onCancelled: ", databaseError.toException());
             }
         });
+
+
+        OnBackPressedDispatcher dispatcher = getOnBackPressedDispatcher();
+        dispatcher.addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (!questionList2.isEmpty()) {
+                    // Show alert if  still questions left
+                    new AlertDialog.Builder(learn_page.this)
+                            .setTitle("Exit Confirmation")
+                            .setMessage("Are you sure you want to exit? All progress will be lost.")
+                            .setPositiveButton("Exit", (dialog, which) -> {
+                                // if still User chooses to exit, call finish
+                                finish();
+                            })
+                            .setNegativeButton("Cancel", (dialog, which) -> {
+                                // if User =cancel, dismiss the dialog and do nothing
+                                dialog.dismiss();
+                            })
+                            .show();
+                } else {
+                    // If the list is empty, just perform the normal back action
+                    setEnabled(false);  // Disable the callback
+                    onBackPressed();
+                }
+            }
+        });
     }
 
 
@@ -151,6 +180,29 @@ public class learn_page extends AppCompatActivity implements OnItemClickListener
             }
         }
     }
+
+//    @Override
+//    public void onBackPressed() {
+//        if (!questionList2.isEmpty()) {
+//            // Show an alert dialog if there are still questions left
+//            new AlertDialog.Builder(this)
+//                    .setTitle("Exit Confirmation")
+//                    .setMessage("Are you sure you want to exit? All progress will be lost.")
+//                    .setPositiveButton("Exit", (dialog, which) -> {
+//                        // User chooses to exit, call super to handle the back press and exit
+//                        super.onBackPressed();
+//                    })
+//                    .setNegativeButton("Cancel", (dialog, which) -> {
+//                        // User chooses to cancel, dismiss the dialog and stay in the activity
+//                        dialog.dismiss();
+//                    })
+//                    .show();
+//        } else {
+//            // If the list is empty, just perform the normal back action
+//            super.onBackPressed();
+//        }
+//    }
+
 }
 
 
