@@ -1,5 +1,6 @@
 package edu.northeastern.brainrush;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -67,6 +68,9 @@ public class panelactivity extends AppCompatActivity {
         );
 
         fetchQuestionsFromFirebase();
+
+
+
     }
 
     private void fetchQuestionsFromFirebase() {
@@ -90,25 +94,6 @@ public class panelactivity extends AppCompatActivity {
             }
         });
     }
-
-//    private void fetchQuestionsFromFirebase() {
-//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Question");
-//        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                List<String> keys = new ArrayList<>();
-//                for (DataSnapshot keyNode : dataSnapshot.getChildren()) {
-//                    keys.add(keyNode.getKey());
-//                }
-//                fetchRandomQuestions(keys);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                // Handle possible errors
-//            }
-//        });
-//    }
 
 
     private void removeQuestionFromList(String questionId) {
@@ -200,14 +185,29 @@ public class panelactivity extends AppCompatActivity {
             });
         }
     }
-//    private void updateUI() {
-//        if (adapter != null) {
-//            adapter.notifyDataSetChanged();
-//        } else {
-//            adapter = new quizz_adapter(quizzlist, this, detailActivityResultLauncher, uid);
-//            quizzview.setAdapter(adapter);
-//        }
-//    }
+
+    @Override
+    public void onBackPressed() {
+        if (!quizzlist.isEmpty()) {
+            // Show an alert dialog if there are still questions left
+            new AlertDialog.Builder(this)
+                    .setTitle("Exit Confirmation")
+                    .setMessage("Are you sure you want to exit? All progress will be lost.")
+                    .setPositiveButton("Exit", (dialog, which) -> {
+                        // User chooses to exit, call finish to close the activity or call super.onBackPressed()
+                        super.onBackPressed();
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> {
+                        // User chooses to cancel, dismiss the dialog and stay in the activity
+                        dialog.dismiss();
+                    })
+                    .show();
+        } else {
+            // If the list is empty or the user is not in the middle of something important, just perform the normal back action
+            super.onBackPressed();
+        }
+    }
+
     private void updateUI() {
         quizzview.setHasFixedSize(true);
 

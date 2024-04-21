@@ -17,8 +17,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.northeastern.brainrush.model.Question;
@@ -184,36 +186,66 @@ public class PracticeDetailAct extends AppCompatActivity {
     public void completedQ(String questionId,String userId) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
             // Get a reference to the user's "CompleteList"
-            DatabaseReference userRef = database.getReference("User").child(userId).child("CompleteList");
+            DatabaseReference userRef = database.getReference("User").child(userId).child("questions_answered");
 
             // Add the question ID to the "CompleteList"
-            userRef.push().setValue(questionId).addOnSuccessListener(aVoid -> {
-                // Handle successful addition
-                Log.d("UpdateCompleteList", "Question ID added to CompleteList successfully.");
-            }).addOnFailureListener(e -> {
-                // Handle failure
-                Log.e("UpdateCompleteList", "Failed to add Question ID to CompleteList.", e);
-            });
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Create a list to hold the current data
+                List<String> questionsAnswered;
+                if (dataSnapshot.exists()) {
+                    // If the data exists, deserialize it to a List object
+                    questionsAnswered = dataSnapshot.getValue(new GenericTypeIndicator<List<String>>() {});
+                } else {
+                    // Otherwise, initialize an empty list
+                    questionsAnswered = new ArrayList<>();
+                }
 
+                // Add the new question ID to the list
+                questionsAnswered.add(questionId);
+
+                // Save the updated list back to Firebase
+                userRef.setValue(questionsAnswered).addOnSuccessListener(aVoid -> {
+                    Log.d("UpdateCompleteList", "Question ID added to CompleteList successfully.");
+                }).addOnFailureListener(e -> {
+                    Log.e("UpdateCompleteList", "Failed to add Question ID to CompleteList.", e);
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Firebase", "loadUser:onCancelled", databaseError.toException());
+            }
+        });
     }
 
 
     private void checkIfQuestionCompleted(String userId, String questionId) {
         DatabaseReference completeListRef = FirebaseDatabase.getInstance().getReference("User")
                 .child(userId)
-                .child("CompleteList");
+                .child("questions_answered");
 
-        // Check if questionId is in the CompleteList
-        completeListRef.orderByValue().equalTo(questionId).addListenerForSingleValueEvent(new ValueEventListener() {
+        // Fetch the entire list of answered questions
+        completeListRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean isCompleted = false;
+
                 if (dataSnapshot.exists()) {
-                    // Question ID is found in CompleteList, show the Review_text
-                    TextView reviewText = findViewById(R.id.Review_text);
+                    // Deserialize the snapshot into a List of Strings
+                    List<String> completedQuestions = dataSnapshot.getValue(new GenericTypeIndicator<List<String>>() {});
+                    // Check if the list contains the specific questionId
+                    if (completedQuestions != null && completedQuestions.contains(questionId)) {
+                        isCompleted = true;
+                    }
+                }
+
+                // Update the visibility of reviewText based on whether the question is completed
+                TextView reviewText = findViewById(R.id.Review_text);
+                if (isCompleted) {
                     reviewText.setVisibility(View.VISIBLE);
                 } else {
-                    // Question ID is not in CompleteList, ensure Review_text is hidden
-                    TextView reviewText = findViewById(R.id.Review_text);
                     reviewText.setVisibility(View.GONE);
                 }
             }
@@ -221,6 +253,7 @@ public class PracticeDetailAct extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e("checkIfCompleted", "Error checking complete list: " + databaseError.getMessage());
+                // Optionally handle the cancellation here, e.g., by showing an error message
             }
         });
     }
