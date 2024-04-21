@@ -1,6 +1,8 @@
 package edu.northeastern.brainrush.match;
 
+import android.animation.Animator;
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,10 +11,12 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,40 +32,46 @@ import java.util.TimerTask;
 import edu.northeastern.brainrush.R;
 import edu.northeastern.brainrush.model.Question;
 
-public class QuestionDemo extends AppCompatActivity {
+public class QuestionPage extends AppCompatActivity {
 
-    DatabaseReference roomRef;
-    DatabaseReference heartBeatRef;
-    DatabaseReference userRef;
-    DatabaseReference opponentHeartBeatRef;
-    List<Question> questions;
-    int currentQuestion;
-    TextView question;
-    RadioGroup choices;
+    private DatabaseReference roomRef;
+    private DatabaseReference heartBeatRef;
+    private DatabaseReference userRef;
+    private DatabaseReference opponentHeartBeatRef;
+    private List<Question> questions;
+    private int currentQuestion;
+    private TextView question;
+    private RadioGroup choices;
 
-    Button submit;
+    private Button submit;
 
     private RadioButton option1;
     private RadioButton option2;
     private RadioButton option3;
     private RadioButton option4;
+    private TextView countDownHeader;
+    private LottieAnimationView animationView;
 
-    AlertDialog resultDialog = null;
+    private AlertDialog resultDialog = null;
+    private AlertDialog disconnectDialog = null;
 
-    String userId;
-    UserRole role;
-    int heartbeat = 0;
-    int opponentHeartBeat = 0;
-    Timer timer;
-    int num_correct;
+    private String userId;
+    private UserRole role;
+    private int heartbeat = 0;
+    private int opponentHeartBeat = 0;
+    private Timer timer;
+    private int num_correct;
 
-    Long start_time;
-    Long finish_time;
+    private Long start_time;
+    private Long finish_time;
+    private Long count_down = 180L + 10L;
+
+    private ValueEventListener opponentlistenr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.daily_question_question_page);
+        setContentView(R.layout.activity_match_question);
 
         role = UserRole.fromValue(getIntent().getIntExtra("role", -1));
         String roomId = getIntent().getStringExtra("roomId");
@@ -73,6 +83,7 @@ public class QuestionDemo extends AppCompatActivity {
         option2 = findViewById(R.id.option2);
         option3 = findViewById(R.id.option3);
         option4 = findViewById(R.id.option4);
+        countDownHeader = findViewById(R.id.countdown_header);
 
         findViewById(R.id.correct_answer_indicator).setVisibility(View.INVISIBLE);
         submit = findViewById(R.id.submit_button);
@@ -99,7 +110,7 @@ public class QuestionDemo extends AppCompatActivity {
         currentQuestion = 0;
         num_correct = 0;
 
-        opponentHeartBeatRef.addValueEventListener(new ValueEventListener() {
+        opponentlistenr = opponentHeartBeatRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.getValue() == null){
@@ -129,13 +140,64 @@ public class QuestionDemo extends AppCompatActivity {
 
                 if(Math.abs(opponentHeartBeat - heartbeat) > 7){
                     handleDisconnect();
+                    opponentHeartBeatRef.removeEventListener(opponentlistenr);
                     timer.cancel();
+                }
+                if(resultDialog == null) {
+                    if (heartbeat >= count_down - 10) {
+                        opponentHeartBeatRef.removeEventListener(opponentlistenr);
+                        timer.cancel();
+                        finish_time = System.currentTimeMillis();
+                        if (role.equals(UserRole.Guest)) {
+                            roomRef.child("result").child("guest_score").setValue(num_correct);
+                            roomRef.child("result").child("guest_end").setValue(finish_time);
+                        } else {
+                            roomRef.child("result").child("host_score").setValue(num_correct);
+                            roomRef.child("result").child("host_end").setValue(finish_time);
+                        }
+
+                        if (role.equals(UserRole.Host)) {
+                            processResult();
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showResultDialog();
+                            }
+                        });
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                countDownHeader.setText(String.format("Time Left: %d", count_down - 10 - heartbeat));
+                                if (count_down - 10 - heartbeat < 15) {
+                                    countDownHeader.setTextColor(Color.RED);
+                                }
+                            }
+                        });
+                    }
                 }
             }
         };
 
         timer = new Timer();
         timer.scheduleAtFixedRate(heartBeatTask, 0, 1000);
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        if(resultDialog != null){
+            resultDialog.dismiss();
+        }
+        if(disconnectDialog != null){
+            disconnectDialog.dismiss();
+        }
     }
 
     private void fetchQuestions(){
@@ -198,15 +260,22 @@ public class QuestionDemo extends AppCompatActivity {
         else if(currentQuestion < questions.size() - 1){
             if(option1.isChecked() && questions.get(currentQuestion).correctAnswer.equals(option1.getText().toString())){
                 num_correct++;
+                option1.setChecked(false);
             }
             else if(option2.isChecked() && questions.get(currentQuestion).correctAnswer.equals(option2.getText().toString())){
                 num_correct++;
+                option2.setChecked(false);
             }
             else if(option3.isChecked() && questions.get(currentQuestion).correctAnswer.equals(option3.getText().toString())){
                 num_correct++;
+                option3.setChecked(false);
             }
             else if(option4.isChecked() && questions.get(currentQuestion).correctAnswer.equals(option4.getText().toString())){
                 num_correct++;
+                option4.setChecked(false);
+            }
+            else if(choices.getCheckedRadioButtonId() == -1){
+                return;
             }
             currentQuestion++;
             question.setText(questions.get(currentQuestion).context);
@@ -273,6 +342,10 @@ public class QuestionDemo extends AppCompatActivity {
         TextView questionResult = dialogView.findViewById(R.id.question_result);
         TextView timeCost = dialogView.findViewById(R.id.time_consumed);
         header.setText("Wait for another Player");
+        animationView = dialogView.findViewById(R.id.lottieAnimationView);
+        if(heartbeat >= count_down){
+            header.setText("Time out");
+        }
 
         Button finish = dialogView.findViewById(R.id.finish);
         finish.setOnClickListener(new View.OnClickListener() {
@@ -291,6 +364,7 @@ public class QuestionDemo extends AppCompatActivity {
                 if(snapshot.exists()){
                     String winner = (String) snapshot.getValue();
                     if(winner != null && !Objects.equals(winner, "Not Over")){
+                        opponentHeartBeatRef.removeEventListener(opponentlistenr);
                         timer.cancel();
                         questionResult.setText(String.format("Correct Answers: %d/5", num_correct));
                         long seconds = (finish_time - start_time) / 1000;
@@ -299,6 +373,7 @@ public class QuestionDemo extends AppCompatActivity {
                         timeCost.setText(String.format("Time: %dmin %ds", minutes, remainingSeconds));
                         if(winner.equals(String.valueOf(role.getValue()))){
                             header.setText("You win!");
+                            checkAnimation(true);
                             userRef.child("score").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -319,6 +394,7 @@ public class QuestionDemo extends AppCompatActivity {
                             });
                         }
                         else{
+                            checkAnimation(false);
                             header.setText("You Lose.");
                             finish.setVisibility(View.VISIBLE);
                             finish.setClickable(true);
@@ -333,8 +409,8 @@ public class QuestionDemo extends AppCompatActivity {
             }
         });
 
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        resultDialog = builder.create();
+        resultDialog.show();
     }
 
     public void showDisconnectedDialog(){
@@ -353,13 +429,26 @@ public class QuestionDemo extends AppCompatActivity {
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                opponentHeartBeatRef.removeEventListener(opponentlistenr);
                 timer.cancel();
                 finish();
             }
         });
 
-        resultDialog = builder.create();
-        resultDialog.show();
+        disconnectDialog = builder.create();
+        disconnectDialog.show();
+    }
+
+    public void checkAnimation(boolean win) {
+        animationView.setVisibility(View.VISIBLE);
+        if(win){
+            animationView.setAnimation(R.raw.win);
+        }
+        else{
+            animationView.setAnimation(R.raw.fail);
+        }
+        animationView.playAnimation();
+
     }
 
 }

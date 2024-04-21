@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,25 +25,25 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+import java.util.Random;
 
 import edu.northeastern.brainrush.match.Host;
 import edu.northeastern.brainrush.match.MatchRoom;
-import edu.northeastern.brainrush.match.QuestionDemo;
+import edu.northeastern.brainrush.match.QuestionPage;
 import edu.northeastern.brainrush.match.UserRole;
 import edu.northeastern.brainrush.model.Question;
 
 public class CompeteActivity extends AppCompatActivity {
 
-    Spinner subjectSpinner;
-    Button match_button;
-    boolean matching;
-    DatabaseReference matchRef;
-    DatabaseReference questionRef;
-    DatabaseReference userRef;
-    String roomId;
-    String currentId;
-    String subject;
+    private Spinner subjectSpinner;
+    private Button match_button;
+    private boolean matching;
+    private DatabaseReference matchRef;
+    private DatabaseReference questionRef;
+    private DatabaseReference userRef;
+    private String roomId;
+    private String currentId;
+    private String subject;
 
 
     @Override
@@ -63,6 +65,7 @@ public class CompeteActivity extends AppCompatActivity {
         currentId = getIntent().getExtras().getString("id");
 
         matching = false;
+//        Log.v("onCreate", "roomid is set to null");
         roomId = null;
         match_button = findViewById(R.id.match_button);
         match_button.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +80,7 @@ public class CompeteActivity extends AppCompatActivity {
                     match_button.getBackground().setTint(Color.RED);
                     match_button.setText("Cancel");
                     subject = subjectSpinner.getSelectedItem().toString();
-                    matchClicked();
+                    matchClicked(subject);
                 }
             }
         });
@@ -107,6 +110,7 @@ public class CompeteActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+//        Log.d("ActivityLifecycle", "onResume() called " + String.valueOf(roomId==null) + String.valueOf(!matching));
         if(roomId != null){
             // when the match is correctly finished
             match_button.getBackground().setTint(Color.CYAN);
@@ -116,91 +120,88 @@ public class CompeteActivity extends AppCompatActivity {
         }
     }
 
-    public void matchClicked(){
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(matching){
+            exitClicked();
+        }
+    }
+
+
+    public void matchClicked(String subject){
         // check if have host
         matching = true;
-        matchRef.child("Host").child(currentId).removeValue();
-        matchRef.child("Host").addListenerForSingleValueEvent(new ValueEventListener() {
+        matchRef.child("Host").child(currentId).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    // yes, find host, transactional change, create room
-                    String hostName = null;
-                    for(DataSnapshot host: snapshot.getChildren()){
-                        if(Objects.equals((String)host.child("status").getValue(), "Waiting")) {
-                            hostName = host.getKey();
-                            break;
-                        }
-                    }
-
-                    if(hostName == null){
-                        // enter queue
-                        addHost(currentId);
-                        return;
-                    }
-                    String finalHostName = hostName;
-                    matchRef.child("Host").child(finalHostName).runTransaction(new Transaction.Handler() {
-                        @NonNull
-                        @Override
-                        public Transaction.Result doTransaction(MutableData mutableData) {
-                            if(mutableData == null){
-                                addHost(currentId);
-                                return Transaction.abort();
+            public void onComplete(@NonNull Task<Void> task) {
+                matchRef.child("Host").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // yes, find host, transactional change, create room
+                            String hostName = null;
+                            for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                                Host host = dataSnapshot.getValue(Host.class);
+                                if(host !=null && host.getStatus().equals("Waiting") && host.getSubject().equals(subject)) {
+                                    hostName = dataSnapshot.getKey();
+                                    break;
+                                }
                             }
 
-                            MatchRoom matchingRoom = new MatchRoom(finalHostName, currentId);
-                            String newId = finalHostName + "_" + currentId;
-                            matchRef.child("Match").child(newId).setValue(matchingRoom);
-                            getAndSetQuestions();
-                            mutableData.child("status").setValue(newId);
-                            roomId = newId;
-                            matchRef.child("Match").child(newId).addValueEventListener(new ValueEventListener() {
+                            if(hostName == null || hostName.equals(currentId)){
+                                // enter queue
+                                addHost(currentId, subject);
+                                return;
+                            }
+                            String finalHostName = hostName;
+                            matchRef.child("Host").child(finalHostName).runTransaction(new Transaction.Handler() {
+                                @NonNull
                                 @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    // Check if data exists
-                                    if (!dataSnapshot.exists()) {
-                                        exitClicked();
-                                        Log.d("Guest", "Data has been removed");
+                                public Transaction.Result doTransaction(MutableData mutableData) {
+                                    if(mutableData == null){
+                                        addHost(currentId, subject);
+                                        return Transaction.abort();
                                     }
+
+                                    MatchRoom matchingRoom = new MatchRoom(finalHostName, currentId);
+                                    String newId = finalHostName + "_" + currentId;
+                                    matchRef.child("Match").child(newId).setValue(matchingRoom);
+                                    getAndSetQuestions();
+                                    mutableData.child("status").setValue(newId);
+                                    roomId = newId;
+                                    return Transaction.success(mutableData);
                                 }
 
                                 @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    // Handle errors
-                                    Log.d("TAG", "Error: " + databaseError.getMessage());
+                                public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                                    Log.v("trans", "Transaction completed");
+                                    Intent intent = new Intent(CompeteActivity.this, QuestionPage.class);
+                                    intent.putExtra("roomId", roomId);
+                                    intent.putExtra("role", UserRole.Guest.getValue());
+                                    intent.putExtra("userId", currentId);
+                                    startActivity(intent);
                                 }
                             });
 
-                            return Transaction.success(mutableData);
+
+                        } else {
+                            // no, add to host, listen to change
+                            addHost(currentId, subject);
                         }
+                    }
 
-                        @Override
-                        public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
-                            Log.v("trans", "Transaction completed");
-                            Intent intent = new Intent(CompeteActivity.this, QuestionDemo.class);
-                            intent.putExtra("roomId", roomId);
-                            intent.putExtra("role", UserRole.Guest.getValue());
-                            intent.putExtra("userId", currentId);
-                            startActivity(intent);
-                        }
-                    });
-
-
-                } else {
-                    // no, add to host, listen to change
-                    addHost(currentId);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.v("Check host list", "failed");
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.v("Check host list", "failed");
+                    }
+                });
             }
         });
     }
 
-    public void addHost(String key){
-        Host host = new Host();
+    public void addHost(String key, String subject){
+        Host host = new Host(subject);
         matchRef.child("Host").child(key).setValue(host, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -214,7 +215,7 @@ public class CompeteActivity extends AppCompatActivity {
                                 String status = (String) snapshot.getValue();
                                 if(status == null || status.equals("Waiting")){ return;}
                                 roomId = snapshot.getValue().toString();
-                                matchRef.child("Match").child(roomId).addValueEventListener(new ValueEventListener() {
+                                matchRef.child("Match").child(roomId).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         // Check if data exists
@@ -232,7 +233,7 @@ public class CompeteActivity extends AppCompatActivity {
                                 });
                                 userRef.child("Matching").setValue(roomId);
                                 matchRef.child("Host").child(key).removeValue();
-                                Intent intent = new Intent(CompeteActivity.this, QuestionDemo.class);
+                                Intent intent = new Intent(CompeteActivity.this, QuestionPage.class);
                                 intent.putExtra("roomId", roomId);
                                 intent.putExtra("role", UserRole.Host.getValue());
                                 intent.putExtra("userId", currentId);
@@ -288,14 +289,20 @@ public class CompeteActivity extends AppCompatActivity {
                 }
                 else {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        if(questions.size() >= num_q){ break;}
                         Question q = dataSnapshot.getValue(Question.class);
                         if(q.subject.equals(subject)) {
                             questions.add(q);
                         }
                     }
                 }
-                for(int i = 0; i < questions.size(); i++) {
+                Random random = new Random();
+                for (int i = questions.size() - 1; i > 0; i--) {
+                    int j = random.nextInt(i + 1);
+                    Question temp = questions.get(i);
+                    questions.set(i, questions.get(j));
+                    questions.set(j, temp);
+                }
+                for(int i = 0; i < Math.min(num_q, questions.size()); i++) {
                     matchRef.child("Match")
                             .child(roomId).child("Questions").child(String.valueOf(i))
                             .setValue(questions.get(i));

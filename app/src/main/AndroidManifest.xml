@@ -33,7 +33,7 @@
             android:name=".LearnActivity"
             android:exported="false" />
         <activity
-            android:name=".match.QuestionDemo"
+            android:name=".match.QuestionPage"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"

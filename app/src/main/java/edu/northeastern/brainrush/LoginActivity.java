@@ -58,14 +58,16 @@ public class LoginActivity extends AppCompatActivity {
                         // Login success, navigate to main activity
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            if (user.isEmailVerified()) {
-                                // Email is verified, proceed to the next activity
-                                fetchUserData(user.getUid());
-                                finish();
-                            } else {
-                                Toast.makeText(LoginActivity.this, "Please verify your email address.", Toast.LENGTH_LONG).show();
-                                mAuth.signOut(); // Optional: sign out the user until they verify their email
-                            }
+                            fetchUserData(user.getUid());
+                            finish();
+//                            if (user.isEmailVerified()) {
+//                                // Email is verified, proceed to the next activity
+//                                fetchUserData(user.getUid());
+//                                finish();
+//                            } else {
+//                                Toast.makeText(LoginActivity.this, "Please verify your email address.", Toast.LENGTH_LONG).show();
+//                                mAuth.signOut(); // Optional: sign out the user until they verify their email
+//                            }
                         }
                     } else {
                         // Error handling
