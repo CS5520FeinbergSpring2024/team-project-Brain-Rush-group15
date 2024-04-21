@@ -33,6 +33,7 @@ public class learn_page extends AppCompatActivity implements OnItemClickListener
     private static final int REQUEST_CODE_REMOVE_QUESTION = 1;
     RecyclerView practice_view;//
 
+    private String uid;
     private User user;
     private String selectedCategory;
 
@@ -49,6 +50,7 @@ public class learn_page extends AppCompatActivity implements OnItemClickListener
         //retrieved data from the previous activity
         Intent intent = getIntent();
         String selectedCategory = intent.getStringExtra("selectedCategory");
+        uid =intent.getStringExtra("id");
         user = intent.getParcelableExtra("user");
 
 
@@ -123,7 +125,9 @@ public class learn_page extends AppCompatActivity implements OnItemClickListener
     public void onItemClick(String questionId, String userId) {
         Intent intent = new Intent(this, PracticeDetailAct.class);
         intent.putExtra("questionId", questionId);
-        intent.putExtra("userid", userId);
+        intent.putExtra("userid", uid);
+        intent.putExtra("user", user);
+
         startActivityForResult(intent, REQUEST_CODE_REMOVE_QUESTION);
     }
 

@@ -18,6 +18,8 @@ public class LearnActivity extends AppCompatActivity {
 
     private User user;
 
+    private String uid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +41,7 @@ public class LearnActivity extends AppCompatActivity {
         if (extras != null) {
             //Setting up the date selected from the previous page
             user = (User) extras.get("user");
+            uid = extras.getString("id");
         }
 
 
@@ -63,6 +66,7 @@ public class LearnActivity extends AppCompatActivity {
                 Intent intent = new Intent(LearnActivity.this, learn_page.class);
                 intent.putExtra("selectedCategory", selectedCategory);
                 intent.putExtra("user", user);//send user info to the next intent
+                intent.putExtra("id", uid);//send user info to the next intent
 
                 startActivity(intent);
             }
