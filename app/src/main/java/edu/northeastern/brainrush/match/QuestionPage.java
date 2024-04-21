@@ -185,20 +185,23 @@ public class QuestionPage extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed(){
-        super.onBackPressed();
-        finish();
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
+        if(timer != null){
+            timer.cancel();
+        }
         if(resultDialog != null){
             resultDialog.dismiss();
         }
         if(disconnectDialog != null){
             disconnectDialog.dismiss();
         }
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+
     }
 
     private void fetchQuestions(){
