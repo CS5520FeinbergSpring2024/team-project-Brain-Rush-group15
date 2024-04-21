@@ -293,7 +293,7 @@ public class CompeteActivity extends AppCompatActivity {
                         Question q = dataSnapshot.getValue(Question.class);
                         if(subject.equals("Random") || q.subject.equals(subject)) {
                             questions.add(q);
-                            Log.v("q", "added");
+//                            Log.v("q", "added");
                         }
                     }
                 }

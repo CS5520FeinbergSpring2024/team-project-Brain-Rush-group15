@@ -2,13 +2,20 @@ package edu.northeastern.brainrush;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Picasso;
 
@@ -23,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView score, level;
     private User user;
     private String uid;
+
+    private DatabaseReference userRef;
+    private ValueEventListener userListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +53,25 @@ public class MainActivity extends AppCompatActivity {
             user = (User) extras.get("user");
         }
 
+        userRef = FirebaseDatabase.getInstance().getReference().child("User").child(uid);
+        userListener = null;
+        userListener = userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    user = snapshot.getValue(User.class);
+                    score.setText("Score: " + user.getScore());
+                    level.setText("Level: " + user.getLevel());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         score.setText("Score: " + user.getScore());
         level.setText("Level: " + user.getLevel());
-
 
         Log.v("user", user.getName());
 
@@ -106,6 +132,14 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("user", user);
         intent.putExtra("id", uid);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        if(userListener != null){
+            userRef.removeEventListener(userListener);
+        }
     }
 
 }
