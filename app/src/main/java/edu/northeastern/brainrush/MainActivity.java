@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("user", user);
         intent.putExtra("id", uid);
         startActivity(intent);
-        Toast.makeText(this, "user file clicked", Toast.LENGTH_SHORT).show();
     }
 
     public void openMail(View v){
@@ -79,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("user", user);
         intent.putExtra("id", uid);
         startActivity(intent);
-        Toast.makeText(this, "mail clicked", Toast.LENGTH_SHORT).show();
     }
 
     public void openDashboard(View v){
@@ -87,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("user", user);
         intent.putExtra("id", uid);
         startActivity(intent);
-        Toast.makeText(this, "dashboard clicked", Toast.LENGTH_SHORT).show();
     }
 
     public void openLearn(View v){
@@ -95,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("user", user);
         intent.putExtra("id", uid);
         startActivity(intent);
-        Toast.makeText(this, "learn clicked", Toast.LENGTH_SHORT).show();
     }
 
     public void openMake(View v){
@@ -103,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("user", user);
         intent.putExtra("id", uid);
         startActivity(intent);
-        Toast.makeText(this, "make clicked", Toast.LENGTH_SHORT).show();
     }
 
     public void openCompete(View v){
@@ -111,15 +106,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("user", user);
         intent.putExtra("id", uid);
         startActivity(intent);
-        Toast.makeText(this, "compete clicked", Toast.LENGTH_SHORT).show();
     }
-
-//    public void openLeaderboard(View v){
-//        Intent intent = new Intent(MainActivity.this, Leaderboard.class);
-//        intent.putExtra("user", user);
-//        intent.putExtra("id", uid);
-//        startActivity(intent);
-//        Toast.makeText(this, "Leaderboard clicked", Toast.LENGTH_SHORT).show();
-//    }
 
 }
