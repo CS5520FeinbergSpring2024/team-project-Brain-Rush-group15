@@ -16,6 +16,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +35,7 @@ public class practice_quizz_adapter extends RecyclerView.Adapter<practice_quizz_
     private List<Question> Quizzlist;//le quizz list
     private Context context;
     private String userid;
+
 
     public interface AdapterDataObserver {
         void onListEmpty();
@@ -42,7 +50,6 @@ public class practice_quizz_adapter extends RecyclerView.Adapter<practice_quizz_
         this.userid = uid;
         this.listener = listener;
 
-
     }
 
 
@@ -51,7 +58,7 @@ public class practice_quizz_adapter extends RecyclerView.Adapter<practice_quizz_
     public practice_quizz_ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
 //create view
         //return new practice_quizz_ViewHolder(LayoutInflater.from(Context).inflate(R.layout.practice_quizzlist_item, parent, false));//set parent n false to avoid two textview overlap
-        return new practice_quizz_ViewHolder(LayoutInflater.from(context).inflate(R.layout.quizzlist_item, parent, false));//set parent n false to avoid two textview overlap
+        return new practice_quizz_ViewHolder(LayoutInflater.from(context).inflate(R.layout.quizzlist_item, parent, false), userid);//set parent n false to avoid two textview overlap
 
     }
 
@@ -86,16 +93,19 @@ public class practice_quizz_adapter extends RecyclerView.Adapter<practice_quizz_
     }
 
     public class practice_quizz_ViewHolder extends RecyclerView.ViewHolder  {
+        private DatabaseReference answeredRef;
         public TextView quizz_titleTV;
         public TextView quizz_likenessTV;
 
+        public ValueEventListener valueEventListener;
+
         //an indicater that verify if the user opened/access the quizz, in another work, seened
 
-        public practice_quizz_ViewHolder(@NonNull View itemsView) {
+        public practice_quizz_ViewHolder(@NonNull View itemsView, String uid) {
             super(itemsView);
             quizz_titleTV = itemsView.findViewById(R.id.quizz_title);
             quizz_likenessTV = itemsView.findViewById(R.id.quizz_likes);
-
+            this.answeredRef = FirebaseDatabase.getInstance().getReference().child("User").child(uid).child("questions_answered");
             itemView.setOnClickListener(view -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
@@ -124,6 +134,36 @@ public class practice_quizz_adapter extends RecyclerView.Adapter<practice_quizz_
             if(quizzOnarrival.likes!=null){
                 likers = quizzOnarrival.likes.size();}
             quizz_likenessTV.setText("Like: " +Integer.toString(likers)); // Assuming there is a getLikes method returning an int.
+
+            valueEventListener = answeredRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue() != null) {
+                        List<String> completedQuestions = dataSnapshot.getValue(new GenericTypeIndicator<List<String>>() {});
+                        // Check if the list contains the specific questionId
+                        if (completedQuestions != null && completedQuestions.contains(quizzOnarrival.id)) {
+                            itemView.setBackgroundColor(0xFF90EE90);
+                            notifyItemChanged(getAdapterPosition());
+                            answeredRef.removeEventListener(valueEventListener);
+                        }
+                        else{
+                            if (getAdapterPosition() % 2 == 0) {
+                                itemView.setBackgroundColor(0xFFD8D8D8);
+                            }
+                            else{
+                                itemView.setBackgroundColor(0xFFF4F4F4);
+                            }
+                        }
+                    }
+
+                    // Notify the adapter that this item has changed
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle error
+                }
+            });
         }
     }
 }

@@ -187,6 +187,7 @@ public class QuestionPage extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         super.onBackPressed();
+        finish();
     }
 
     @Override
@@ -258,19 +259,19 @@ public class QuestionPage extends AppCompatActivity {
             showResultDialog();
         }
         else if(currentQuestion < questions.size() - 1){
-            if(option1.isChecked() && questions.get(currentQuestion).correctAnswer.equals(option1.getText().toString())){
+            if(option1.isChecked() && questions.get(currentQuestion).correctAnswer.equals("1")){
                 num_correct++;
                 option1.setChecked(false);
             }
-            else if(option2.isChecked() && questions.get(currentQuestion).correctAnswer.equals(option2.getText().toString())){
+            else if(option2.isChecked() && questions.get(currentQuestion).correctAnswer.equals("2")){
                 num_correct++;
                 option2.setChecked(false);
             }
-            else if(option3.isChecked() && questions.get(currentQuestion).correctAnswer.equals(option3.getText().toString())){
+            else if(option3.isChecked() && questions.get(currentQuestion).correctAnswer.equals("3")){
                 num_correct++;
                 option3.setChecked(false);
             }
-            else if(option4.isChecked() && questions.get(currentQuestion).correctAnswer.equals(option4.getText().toString())){
+            else if(option4.isChecked() && questions.get(currentQuestion).correctAnswer.equals("4")){
                 num_correct++;
                 option4.setChecked(false);
             }

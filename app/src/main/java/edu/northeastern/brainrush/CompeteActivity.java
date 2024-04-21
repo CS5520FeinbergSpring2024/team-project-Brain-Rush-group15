@@ -86,7 +86,7 @@ public class CompeteActivity extends AppCompatActivity {
         });
 
         matchRef = FirebaseDatabase.getInstance().getReference().child("MatchPool");
-        questionRef = FirebaseDatabase.getInstance().getReference().child("Questions");
+        questionRef = FirebaseDatabase.getInstance().getReference().child("Question");
         userRef = FirebaseDatabase.getInstance().getReference().child("User").child(currentId);
 
         userRef.child("Matching").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -284,14 +284,16 @@ public class CompeteActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Question> questions = new ArrayList<>();
+                Log.v("q", String.valueOf(snapshot.exists()));
                 if (!snapshot.exists()) {
                     questions = getDummyQuestions();
                 }
                 else {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         Question q = dataSnapshot.getValue(Question.class);
-                        if(q.subject.equals(subject)) {
+                        if(subject.equals("Random") || q.subject.equals(subject)) {
                             questions.add(q);
+                            Log.v("q", "added");
                         }
                     }
                 }

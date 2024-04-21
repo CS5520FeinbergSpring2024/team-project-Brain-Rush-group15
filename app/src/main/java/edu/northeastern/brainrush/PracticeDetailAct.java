@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -32,7 +33,7 @@ public class PracticeDetailAct extends AppCompatActivity {
     private String uid;
     private User user;//le user
 
-
+    private boolean giveExp;
     private TextView Question_body_TV;//the question prompt
 
     private TextView correct_indicator_TV;//only appear when correct answer is selected
@@ -186,38 +187,42 @@ public class PracticeDetailAct extends AppCompatActivity {
     public void completedQ(String questionId,String userId) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
             // Get a reference to the user's "CompleteList"
-            DatabaseReference userRef = database.getReference("User").child(userId).child("questions_answered");
+        DatabaseReference userRef = database.getReference("User").child(userId).child("questions_answered");
+
+        if(giveExp) {
 
             // Add the question ID to the "CompleteList"
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Create a list to hold the current data
-                List<String> questionsAnswered;
-                if (dataSnapshot.exists()) {
-                    // If the data exists, deserialize it to a List object
-                    questionsAnswered = dataSnapshot.getValue(new GenericTypeIndicator<List<String>>() {});
-                } else {
-                    // Otherwise, initialize an empty list
-                    questionsAnswered = new ArrayList<>();
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // Create a list to hold the current data
+                    List<String> questionsAnswered;
+                    if (dataSnapshot.exists()) {
+                        // If the data exists, deserialize it to a List object
+                        questionsAnswered = dataSnapshot.getValue(new GenericTypeIndicator<List<String>>() {
+                        });
+                    } else {
+                        // Otherwise, initialize an empty list
+                        questionsAnswered = new ArrayList<>();
+                    }
+
+                    // Add the new question ID to the list
+                    questionsAnswered.add(questionId);
+
+                    // Save the updated list back to Firebase
+                    userRef.setValue(questionsAnswered).addOnSuccessListener(aVoid -> {
+                        Log.d("UpdateCompleteList", "Question ID added to CompleteList successfully.");
+                    }).addOnFailureListener(e -> {
+                        Log.e("UpdateCompleteList", "Failed to add Question ID to CompleteList.", e);
+                    });
                 }
 
-                // Add the new question ID to the list
-                questionsAnswered.add(questionId);
-
-                // Save the updated list back to Firebase
-                userRef.setValue(questionsAnswered).addOnSuccessListener(aVoid -> {
-                    Log.d("UpdateCompleteList", "Question ID added to CompleteList successfully.");
-                }).addOnFailureListener(e -> {
-                    Log.e("UpdateCompleteList", "Failed to add Question ID to CompleteList.", e);
-                });
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Firebase", "loadUser:onCancelled", databaseError.toException());
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e("Firebase", "loadUser:onCancelled", databaseError.toException());
+                }
+            });
+        }
     }
 
 
@@ -245,8 +250,10 @@ public class PracticeDetailAct extends AppCompatActivity {
                 TextView reviewText = findViewById(R.id.Review_text);
                 if (isCompleted) {
                     reviewText.setVisibility(View.VISIBLE);
+                    giveExp = false;
                 } else {
                     reviewText.setVisibility(View.GONE);
+                    giveExp = true;
                 }
             }
 
@@ -265,15 +272,23 @@ public class PracticeDetailAct extends AppCompatActivity {
         }
         Log.d("Question", "Current User expo, before answer " + user.getExperience());
 
-        user.addExperience(5);
-        Log.d("Question", "Current User expo, afyer answer " + user.getExperience());
-        //time for database
-        String path = "User/" + uid + "/experience";
-        Log.d("Userpath", "Current User path is" + path);
+        if(giveExp) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), "Exp +5", Toast.LENGTH_SHORT).show();
+                }
+            });
+            user.addExperience(5);
+            Log.d("Question", "Current User expo, afyer answer " + user.getExperience());
+            //time for database
+            String path = "User/" + uid + "/experience";
+            Log.d("Userpath", "Current User path is" + path);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference userRef = database.getReference(path);
-        userRef.setValue(user.getExperience());
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference userRef = database.getReference(path);
+            userRef.setValue(user.getExperience());
+        }
 
     }
 }

@@ -64,7 +64,7 @@ public class learn_page extends AppCompatActivity implements OnItemClickListener
         practice_view.setLayoutManager(new LinearLayoutManager(this));
 
         // ----------------------------------------Initialize the adapter---------------------------------------------------------------!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        final practice_quizz_adapter adapter = new practice_quizz_adapter(questionList2, this, user.getName(), this);
+        final practice_quizz_adapter adapter = new practice_quizz_adapter(questionList2, this, uid, this);
         adapter.setAdapterDataObserver(new practice_quizz_adapter.AdapterDataObserver() {
             @Override
             public void onListEmpty() {
@@ -77,7 +77,7 @@ public class learn_page extends AppCompatActivity implements OnItemClickListener
         DatabaseReference questionsRef = databaseRef.child("Question");//questions --> Questions
 
 
-        Query query = questionsRef.orderByChild("subject").equalTo(selectedCategory).limitToFirst(5); ;//subjects --> subject
+        Query query = questionsRef.orderByChild("subject").equalTo(selectedCategory); ;//subjects --> subject
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -116,7 +116,7 @@ public class learn_page extends AppCompatActivity implements OnItemClickListener
                     // Show alert if  still questions left
                     new AlertDialog.Builder(learn_page.this)
                             .setTitle("Exit Confirmation")
-                            .setMessage("Are you sure you want to exit? All progress will be lost.")
+                            .setMessage("Are you sure you want to exit?")
                             .setPositiveButton("Exit", (dialog, which) -> {
                                 // if still User chooses to exit, call finish
                                 finish();
@@ -174,7 +174,7 @@ public class learn_page extends AppCompatActivity implements OnItemClickListener
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_REMOVE_QUESTION && resultCode == RESULT_OK) {
             String removedQuestionId = data.getStringExtra("removedQuestionId");
-            removeQuestionFromList(removedQuestionId);
+//            removeQuestionFromList(removedQuestionId);
             if (questionList2.isEmpty()) {
                 showCompletionDialog();
             }
