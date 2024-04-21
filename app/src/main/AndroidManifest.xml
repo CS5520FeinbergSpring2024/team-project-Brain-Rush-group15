@@ -19,25 +19,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BrainRush"
-        android:screenOrientation="sensorPortrait"
         tools:targetApi="31">
         <activity
             android:name=".CompeteActivity"
+            android:screenOrientation="portrait"
             android:exported="false"/>
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="false"/>
         <activity
             android:name=".MakeActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".LearnActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".match.QuestionPage"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,20 +52,28 @@
         </activity>
         <activity
             android:name=".DailyQuestionsActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".SignupActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".DailyQuestionProblemPage"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ProfileActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
-        <activity android:name="edu.northeastern.brainrush.panelactivity" />
-        <activity android:name="edu.northeastern.brainrush.learn_page" />
-        <activity android:name="edu.northeastern.brainrush.Paneldetailpage" />
-        <activity android:name="edu.northeastern.brainrush.PracticeDetailAct" />
+        <activity android:name="edu.northeastern.brainrush.panelactivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="edu.northeastern.brainrush.learn_page"
+            android:screenOrientation="portrait"/>
+        <activity android:name="edu.northeastern.brainrush.Paneldetailpage"
+            android:screenOrientation="portrait"/>
+        <activity android:name="edu.northeastern.brainrush.PracticeDetailAct"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="preloaded_fonts"
